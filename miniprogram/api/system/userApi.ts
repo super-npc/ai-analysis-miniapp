@@ -15,7 +15,7 @@ export default class userApi {
    * 获取用户信息
    * @param data 
    */
-  static getUserInfo = (data: WxSessionReq) =>
+  static getUserInfo = <WxMaUserInfo>(data: WxSessionReq) =>
     httpRequest.post<WxMaUserInfo>(
       baseUrl + '/get-user-info', data
     )
