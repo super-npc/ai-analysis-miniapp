@@ -28,8 +28,7 @@ App<IAppOption>({
         console.log("登录:"+res.code)
         $api.userApi.login({code: res.code}).then((res) => {
           const loginRes = res as unknown as LoginResp;
-          console.log("返回结果:"+loginRes);
-          console.log("返回openId:"+loginRes.openid);
+          wx.setStorage({ key: "loginRes", data: loginRes });
         });
       },
     })

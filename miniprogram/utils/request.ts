@@ -1,4 +1,5 @@
 import { allBaseUrl } from "../api/base"
+import { LoginResp } from "../api/system/userApi"
 
 /**
  * @description: HTTP请求方法枚举
@@ -20,7 +21,7 @@ interface RequestConfig {
   /** Method类型 */
   method?: HttpMethod
   /** 接口返回数据 */
-  data?: any
+  data?: ApiData
   /** 无TOKEN触发异常捕获时，是否执行异常逻辑 */
   needToken?: boolean
   /** Header头部 */
@@ -29,6 +30,10 @@ interface RequestConfig {
   dataType?: string
   /** 请求报错时，是否弹出message提示（默认弹出）*/
   noShowMsg?: boolean
+}
+interface ApiData {
+  /** 接口返回数据 */
+  data?: any
 }
 
 /**
@@ -98,20 +103,28 @@ class HttpRequest {
       const header = {
         'content-type': contentType,
         'appId': allBaseUrl.appId
-      }
+      } as any;
+      // 我想在动态对 header额外加上属性,如何做
+      wx.getStorage<LoginResp>({key:"loginRes",success(res){
+          const loginRes = res.data;
+          header['openid'] = loginRes.openid;
+          header['sessionKey'] = loginRes.sessionKey;
+          header['unionid'] = loginRes.unionid;
+      }});
+    
       wx.request({
         method: requestConfig.method,
         url: `${requestConfig.url}`,
         data: requestConfig.data,
         header: Object.assign(header, requestConfig?.header),
-        dataType: !requestConfig.dataType ? 'json' : '其他',
         success: function (res) {
           // console.log('发送返回:', res) //res:{cookies, data, header, statusCode}
           const code = res.statusCode || -404
-          const data = res.data
+          const apiData = res.data as ApiData
+          const data = apiData.data;
           /** 接口请求成功*/
           if (code == 200) {
-            resolve(data as any)
+            resolve(data)
           } else if (code === 401) {
             // 未授权
             !requestConfig.noShowMsg && wx.showModal({
@@ -120,11 +133,11 @@ class HttpRequest {
             }).then(resModa => {
               if (resModa.confirm) { }
             })
-            reject({ code, msg: '未登录', data: data })
+            reject({ code, msg: '未登录', data: apiData })
           } else {
             //非200及401状态码-数据处理
             const errMsg = _this.handerErrorStatus(code, requestConfig)
-            reject({ code, msg: errMsg, data })
+            reject({ code, msg: errMsg, data: apiData })
           }
         },
         fail: err => {
