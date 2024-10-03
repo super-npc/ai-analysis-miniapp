@@ -1,0 +1,2 @@
+<!--pages/usercenter/index.wxml-->
+<my-tab-bar></my-tab-bar>
