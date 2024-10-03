@@ -1,2 +1,16 @@
-<!--pages/usercenter/index.wxml-->
-<my-tab-bar></my-tab-bar>
+<view class="">
+  <view class="profile">
+    <t-image class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+    <view class="info">
+      <text class="username">{{username}}</text>
+      <text class="status">{{status}}</text>
+    </view>
+  </view>
+
+  <t-cell-group title="常用功能">
+    <t-cell title="我的订单" icon="order" is-link />
+    <t-cell title="收藏" icon="heart" is-link />
+    <t-cell title="设置" icon="settings" is-link />
+    <t-cell title="帮助与反馈" icon="help" is-link />
+  </t-cell-group>
+</view>
