@@ -1,3 +1,5 @@
+import MediaRequestApi from "../../api/MediaRequestApi";
+
 // pages/demo/index.ts
 Component({
 
@@ -38,8 +40,7 @@ Component({
             src: picPath
           });
           // 上传图片
-          debugger
-          wx.uploadFile({header:{"appId":"sdfsdfsdf"}, name:"aa",url:"http://127.0.0.1:9090/wx/media/upload",filePath:picPath});
+          MediaRequestApi.upload(picPath);
         },
         fail: (res) => {
           console.log("拍照异常" + res.errMsg);

@@ -94,6 +94,30 @@ class HttpRequest {
     return msg
   }
 
+  // 上传文件
+  public uploadFile(url: string,filePath: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: url,
+        filePath: filePath,
+        name: 'ddd',
+        header: {
+          'appId': allBaseUrl.appId
+        },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(JSON.parse(res.data));
+          } else {
+            reject(new Error(`上传失败，状态码：${res.statusCode}`));
+          }
+        },
+        fail: (err) => {
+          reject(new Error('文件上传失败：' + err.errMsg));
+        }
+      });
+    });
+  }
+
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
     let _this = this
