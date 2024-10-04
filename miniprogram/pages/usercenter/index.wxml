@@ -1,16 +1,22 @@
-<view class="">
-  <view class="profile">
-    <t-image class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+<view class="user-center">
+  <view class="user-info">
+    <t-avatar class="avatar" image="{{avatarUrl}}" size="large" />
     <view class="info">
       <text class="username">{{username}}</text>
       <text class="status">{{status}}</text>
     </view>
   </view>
 
-  <t-cell-group title="常用功能">
-    <t-cell title="我的订单" icon="order" is-link />
-    <t-cell title="收藏" icon="heart" is-link />
-    <t-cell title="设置" icon="settings" is-link />
-    <t-cell title="帮助与反馈" icon="help" is-link />
-  </t-cell-group>
+  <view class="function-groups">
+    <t-cell-group title="我的服务">
+      <t-cell title="我的收藏" leftIcon="heart" hover arrow />
+      <t-cell title="优惠券" leftIcon="coupon" hover arrow />
+      <t-cell title="收货地址" leftIcon="location" hover arrow />
+      <t-cell title="客户服务" leftIcon="service" hover arrow />
+    </t-cell-group>
+
+    <t-cell-group>
+      <t-cell title="设置" leftIcon="setting" hover arrow />
+    </t-cell-group>
+  </view>
 </view>

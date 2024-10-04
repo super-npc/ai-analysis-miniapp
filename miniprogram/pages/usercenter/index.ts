@@ -13,7 +13,7 @@ Component({
    */
   data: {
     username: '张三',
-    avatarUrl: 'https://example.com/avatar.png',
+    avatarUrl: '/Users/npc/Downloads/f90e9b1969a0d71c0eb48f54ba984252.jpeg',
     status: '在线',
   },
 
