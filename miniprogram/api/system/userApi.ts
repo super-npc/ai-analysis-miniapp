@@ -9,7 +9,7 @@ export default class userApi {
    */
   static login = <LoginReq>(data: LoginReq) =>
     httpRequest.post<LoginResp>(
-      baseUrl + '/user/login', data
+      baseUrl + '/wx/miniapp/user/login', data
     )
   /**
    * 获取用户信息
@@ -17,7 +17,7 @@ export default class userApi {
    */
   static getUserInfo = <WxMaUserInfo>(data: WxSessionReq) =>
     httpRequest.post<WxMaUserInfo>(
-      baseUrl + '/get-user-info', data
+      baseUrl + '/wx/miniapp/get-user-info', data
     )
 }
 

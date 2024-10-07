@@ -9,6 +9,6 @@ export default class MediaRequestApi {
    * @param filePath 上传文件路径
    */
   static upload = (filePath: string) =>
-    httpRequest.uploadFile(baseUrl + '/media/upload',filePath)
+    httpRequest.uploadFile(baseUrl + '/wx/miniapp/media/upload',filePath)
 
 }

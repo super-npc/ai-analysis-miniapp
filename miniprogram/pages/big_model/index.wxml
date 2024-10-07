@@ -1,0 +1,7 @@
+<!--pages/big_model/index.wxml-->
+<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <t-grid class="block" column="{{4}}" theme="card">
+    <t-grid-item wx:for="{{bigModelList}}" wx:key="id" text="{{item.text}}" image="{{item.image}}" data-id="{{item.id}}" bind:tap="onGridItemTap" />
+  </t-grid>
+</scroll-view>

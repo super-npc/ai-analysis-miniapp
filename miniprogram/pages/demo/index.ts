@@ -22,6 +22,16 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    error(e: any) {
+      console.error('相机错误:', e.detail);
+      wx.showToast({
+        title: '相机出现错误',
+        icon: 'none'
+      });
+      this.setData({
+        showCamera: false
+      });
+    },
 
     toggleCamera() {
       this.setData({

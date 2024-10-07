@@ -1,9 +1,15 @@
 <!--pages/demo/index.wxml-->
-<view class="container">
-  <!-- camera.wxml -->
-  <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" style="width: 100%; height: 300px;"></camera>
-  <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '打开摄像头'}}</button>
-  <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">拍照</button>
-  <view>预览</view>
-  <image wx:if="{{src}}" mode="widthFix" src="{{src}}"></image>
-</view>
+<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <view class="camera-preview-container">
+      <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
+      <image wx:else mode="aspectFit" src="{{src || '/images/placeholder.png'}}" class="preview-image"></image>
+    </view>
+    <view class="button-group">
+      <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '拍照'}}</button>
+      <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>
+    </view>
+    <view class="preview-title">预览</view>
+  </view>
+</scroll-view>
