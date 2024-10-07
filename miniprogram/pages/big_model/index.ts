@@ -49,8 +49,20 @@ Component({
 
     onGridItemTap(event: any) {
       const { id } = event.currentTarget.dataset;
-      // 这里可以添加跳转逻辑，使用id进行跳转
-      console.log('点击了大模型，id:', id);
+      const selectedModel = this.data.bigModelList.find(item => item.id === id);
+      if (selectedModel) {
+        const params = {
+          id: selectedModel.id,
+          text: selectedModel.text,
+          image: selectedModel.image
+        };
+        wx.navigateTo({
+          url: `/pages/ai_analysis/index`,
+          success(data) {
+            data.eventChannel.emit('acceptDataFromOpenerPage', { data: params })
+          }
+        });
+      }
     }
   },
 

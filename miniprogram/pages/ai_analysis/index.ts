@@ -15,7 +15,10 @@ Component({
    */
   data: {
     showCamera: false,
-    src: ''
+    src: '',
+    modelId: '',
+    modelText: '',
+    modelImage: ''
   },
 
   /**
@@ -60,6 +63,24 @@ Component({
           });
         }
       });
+    }
+  },
+  lifetimes: {
+    attached() {
+      const eventChannel = this.getOpenerEventChannel();
+      if (eventChannel) {
+        eventChannel.on('acceptDataFromOpenerPage', (res) => {
+          const { id, text, image } = res.data;
+          this.setData({
+            modelId: id,
+            modelText: text,
+            modelImage: image
+          });
+          console.log('接收到的大模型数据:', { id, text, image });
+        });
+      } else {
+        console.error('无法获取事件通道');
+      }
     }
   }
 })

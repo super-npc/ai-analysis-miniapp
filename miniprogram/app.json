@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/big_model/index",
-    "pages/demo/index",
+    "pages/ai_analysis/index",
     "pages/usercenter/index",
     "pages/index/index"
   ],
