@@ -95,24 +95,27 @@ class HttpRequest {
   }
 
   // 上传文件
-  public uploadFile<T>(url: string,filePath: string): Promise<MyAwesomeData<T>> {
+  public uploadFile<T>(url: string,filePath: string,data: any): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
       wx.uploadFile({
         url: url,
         filePath: filePath,
+        formData: data,
         name: Math.random().toString(36).substring(2, 15),
         header: {
           'appId': allBaseUrl.appId
         },
         success: (res) => {
+          const apiData = res.data
+          const data = JSON.parse(apiData).data;
           if (res.statusCode === 200) {
-            resolve(JSON.parse(res.data));
+            resolve(data)
           } else {
             reject(new Error(`上传失败，状态码：${res.statusCode}`));
           }
         },
         fail: (err) => {
-          reject(new Error('文件上传失败：' + err.errMsg));
+          reject(new Error('上传失败：' + err.errMsg));
         }
       });
     });

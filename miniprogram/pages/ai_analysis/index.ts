@@ -1,5 +1,5 @@
-import MediaRequestApi from "../../api/MediaRequestApi";
 import PictureAnalyseController, { AnalyseResp } from "./PictureAnalyseController";
+const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 // pages/demo/index.ts
 Component({
@@ -17,7 +17,7 @@ Component({
   data: {
     showCamera: false,
     src: '',
-    modelId: '',
+    modelId: 0,
     modelText: '',
     modelImage: ''
   },
@@ -42,16 +42,31 @@ Component({
         showCamera: !this.data.showCamera
       });
     },
-    
-    toServiceAnalysis(picPath: string){
-      // 先对图片显示出来,并有loading的效果,直到服务器图片分析完之后再显示
+
+    async toServiceAnalysis(picPath: string) {
+      // 先展示原始图片
       this.setData({
         src: picPath
       });
-       // 上传图片到服务器进行分析图片,回调完成
-       // 上传图片到服务器进行分析图片,回调完成
-      const analyseResp = PictureAnalyseController.upload(picPath) as unknown as AnalyseResp;
-      console.log('返回结果:'+analyseResp.aa);
+
+      // 显示加载中遮罩层
+      wx.showLoading({
+        title: '分析中...',
+        mask: true
+      });
+
+      // 上传图片并等待分析结果
+      PictureAnalyseController.upload(picPath, { bigModelId: this.data.modelId }).then(res => {
+        const analyseResp = res as unknown as AnalyseResp
+        debugger
+        // 更新显示的图片
+        this.setData({
+          src: baseUrl + analyseResp.analyseFinishPath
+        });
+      }).finally(() => {
+        // 无论成功与否，都隐藏加载中遮罩层
+        wx.hideLoading();
+      });
     },
 
     takePhoto() {
