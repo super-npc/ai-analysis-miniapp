@@ -1,4 +1,4 @@
-import PictureAnalyseController, { AnalyseResp } from "./PictureAnalyseController";
+import PictureAnalyseController, { AnalyseResp, AnalyseResult } from "./PictureAnalyseController";
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 // pages/demo/index.ts
@@ -19,7 +19,8 @@ Component({
     src: '',
     modelId: 0,
     modelText: '',
-    modelImage: ''
+    modelImage: '',
+    analyseResults: [] as AnalyseResult[]
   },
 
   /**
@@ -58,10 +59,11 @@ Component({
       // 上传图片并等待分析结果
       PictureAnalyseController.upload(picPath, { bigModelId: this.data.modelId }).then(res => {
         const analyseResp = res as unknown as AnalyseResp
+        // 更新显示的图片和分析结果
         debugger
-        // 更新显示的图片
         this.setData({
-          src: baseUrl + analyseResp.analyseFinishPath
+          src: baseUrl + analyseResp.analyseFinishPath,
+          analyseResults: analyseResp.analyseResults || []
         });
       }).finally(() => {
         // 无论成功与否，都隐藏加载中遮罩层

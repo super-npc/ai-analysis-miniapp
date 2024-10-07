@@ -17,5 +17,15 @@ export interface AnalyseReq{
 }
 
 export interface AnalyseResp{
-  analyseFinishPath: string
+  analyseFinishPath: string,
+  analyseResults?: AnalyseResult[];
+}
+
+export interface AnalyseResult{
+  label: string;
+  rgb: string;
+  /**
+   * 信赖值
+   */
+  confidence: string;
 }

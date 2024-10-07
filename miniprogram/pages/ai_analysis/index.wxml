@@ -10,6 +10,15 @@
       <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
       <image wx:else mode="aspectFit" src="{{src || '/images/placeholder.png'}}" class="preview-image"></image>
     </view>
+    <view class="analyse-results-container">
+      <view class="analyse-result-item" wx:for="{{analyseResults}}" wx:key="index">
+        <view class="result-label">{{item.label}}</view>
+        <view class="result-details">
+          <view class="result-color" style="background-color: {{item.rgb}};"></view>
+          <view class="result-confidence">置信度: {{item.confidence}}</view>
+        </view>
+      </view>
+    </view>
     <view class="button-group">
       <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '拍照'}}</button>
       <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>

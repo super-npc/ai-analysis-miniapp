@@ -153,3 +153,40 @@ navigation-bar {
 .container{
   animation: fadeIn 0.5s ease-out;
 }
+
+.analyse-results-container {
+  width: 100%;
+  margin-top: 30rpx;
+}
+
+.analyse-result-item {
+  background-color: #ffffff;
+  border-radius: 15rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.result-label {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.result-details {
+  display: flex;
+  align-items: center;
+}
+
+.result-color {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.result-confidence {
+  font-size: 24rpx;
+  color: #666666;
+}
