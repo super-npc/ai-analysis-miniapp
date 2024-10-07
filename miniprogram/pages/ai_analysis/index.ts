@@ -63,6 +63,30 @@ Component({
           });
         }
       });
+    },
+
+    chooseImage() {
+      wx.chooseMedia({
+        count: 1,
+        mediaType: ['image'],
+        sourceType: ['album', 'camera'],
+        success: (res) => {
+          let picPath = res.tempFiles[0].tempFilePath;
+          console.log("选择的图片路径:" + picPath);
+          this.setData({
+            src: picPath
+          });
+          // 上传图片
+          MediaRequestApi.upload(picPath);
+        },
+        fail: (res) => {
+          console.log("选择图片异常" + res.errMsg);
+          wx.showToast({
+            title: '选择图片失败',
+            icon: 'none'
+          });
+        }
+      });
     }
   },
   lifetimes: {
