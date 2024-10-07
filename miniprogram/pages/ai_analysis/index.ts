@@ -60,7 +60,6 @@ Component({
       PictureAnalyseController.upload(picPath, { bigModelId: this.data.modelId }).then(res => {
         const analyseResp = res as unknown as AnalyseResp
         // 更新显示的图片和分析结果
-        debugger
         this.setData({
           src: baseUrl + analyseResp.analyseFinishPath,
           analyseResults: analyseResp.analyseResults || []
