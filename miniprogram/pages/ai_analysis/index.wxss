@@ -79,7 +79,7 @@
 
 /* 按钮样式 */
 button {
-  width: 45;
+  width: 45%;
   font-size: 28rpx;
   background-color: #4CAF50;
   color: white;

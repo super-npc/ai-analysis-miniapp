@@ -17,9 +17,9 @@
     </view>
     <view class="analyse-results-container">
       <view class="analyse-result-item" wx:for="{{analyseResults}}" wx:key="index">
+        <view class="result-color" style="background-color: {{item.rgb}};"></view>
         <view class="result-label">{{item.label}}</view>
         <view class="result-details">
-          <view class="result-color" style="background-color: {{item.rgb}};"></view>
           <view class="result-confidence">置信度: {{item.confidence}}</view>
         </view>
       </view>

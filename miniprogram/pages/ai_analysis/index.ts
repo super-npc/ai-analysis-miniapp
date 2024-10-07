@@ -62,7 +62,10 @@ Component({
         // 更新显示的图片和分析结果
         this.setData({
           src: baseUrl + analyseResp.analyseFinishPath,
-          analyseResults: analyseResp.analyseResults || []
+          analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
+            ...result,
+            rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
+          })) : []
         });
       }).finally(() => {
         // 无论成功与否，都隐藏加载中遮罩层
