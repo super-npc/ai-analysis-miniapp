@@ -1,4 +1,5 @@
 import MediaRequestApi from "../../api/MediaRequestApi";
+import PictureAnalyseController, { AnalyseResp } from "./PictureAnalyseController";
 
 // pages/demo/index.ts
 Component({
@@ -41,6 +42,17 @@ Component({
         showCamera: !this.data.showCamera
       });
     },
+    
+    toServiceAnalysis(picPath: string){
+      // 先对图片显示出来,并有loading的效果,直到服务器图片分析完之后再显示
+      this.setData({
+        src: picPath
+      });
+       // 上传图片到服务器进行分析图片,回调完成
+       // 上传图片到服务器进行分析图片,回调完成
+      const analyseResp = PictureAnalyseController.upload(picPath) as unknown as AnalyseResp;
+      console.log('返回结果:'+analyseResp.aa);
+    },
 
     takePhoto() {
       const camera = wx.createCameraContext();
@@ -49,11 +61,8 @@ Component({
         success: (res) => {
           let picPath = res.tempImagePath;
           console.log("照片路径:" + picPath);
-          this.setData({
-            src: picPath
-          });
-          // 上传图片
-          MediaRequestApi.upload(picPath);
+          // 服务器分析图片
+          this.toServiceAnalysis(picPath);
         },
         fail: (res) => {
           console.log("拍照异常" + res.errMsg);
@@ -73,11 +82,8 @@ Component({
         success: (res) => {
           let picPath = res.tempFiles[0].tempFilePath;
           console.log("选择的图片路径:" + picPath);
-          this.setData({
-            src: picPath
-          });
-          // 上传图片
-          MediaRequestApi.upload(picPath);
+          // 服务器分析图片
+          this.toServiceAnalysis(picPath);
         },
         fail: (res) => {
           console.log("选择图片异常" + res.errMsg);

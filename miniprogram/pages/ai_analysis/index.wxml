@@ -1,5 +1,9 @@
 <!--pages/demo/index.wxml-->
 <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<view class="model-text-container">
+  <text class="model-text">{{modelText}}</text>
+</view>
+
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     <view class="camera-preview-container">

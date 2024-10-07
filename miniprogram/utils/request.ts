@@ -95,12 +95,12 @@ class HttpRequest {
   }
 
   // 上传文件
-  public uploadFile(url: string,filePath: string): Promise<any> {
+  public uploadFile<T>(url: string,filePath: string): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
       wx.uploadFile({
         url: url,
         filePath: filePath,
-        name: 'ddd',
+        name: Math.random().toString(36).substring(2, 15),
         header: {
           'appId': allBaseUrl.appId
         },
