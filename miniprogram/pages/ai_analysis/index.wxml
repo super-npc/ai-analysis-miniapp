@@ -10,6 +10,7 @@
       <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
       <image wx:else mode="aspectFit" src="{{src || '/images/placeholder.png'}}" class="preview-image"></image>
     </view>
+    
     <view class="button-group">
       <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '拍照'}}</button>
       <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>

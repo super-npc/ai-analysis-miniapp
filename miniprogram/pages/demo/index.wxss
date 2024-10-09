@@ -1,0 +1,12 @@
+/* pages/demo/index.wxss */
+
+.group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 32rpx 0;
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
