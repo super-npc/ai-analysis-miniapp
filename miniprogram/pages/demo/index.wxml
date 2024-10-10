@@ -1,7 +1,22 @@
 <!--pages/demo/index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
-<view class="group">
-  <t-skeleton rowCol="{{rowCol}}" loading></t-skeleton>
-  <t-skeleton rowCol="{{rowCol}}" loading></t-skeleton>
+<view class="container">
+  <view class="header">
+    <text class="title">图片识别</text>
+  </view>
+  
+  <view class="menu-list">
+    <view class="menu-item" wx:for="{{menuItems}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}">
+      <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="food-info">
+        <text class="food-name">{{item.name}}</text>
+        <text class="food-description">{{item.description}}</text>
+        <view class="price-container">
+          <text class="price">¥ {{item.price}}</text>
+          <text class="status">{{item.status}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
