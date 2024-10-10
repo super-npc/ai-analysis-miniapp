@@ -1,5 +1,5 @@
 import { httpRequest } from '../../utils/request'
-const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
+const baseUrl = require('../base').allBaseUrl.GDEnvs.host
 
 export default class MiniAppBizController {
   static listBigModel = <MiniAppListBigModelResp>(data: MiniListBigModelReq) =>
@@ -8,19 +8,21 @@ export default class MiniAppBizController {
     )
 
 }
-export interface MiniListBigModelReq {
-  name?: string;
-  age?: number;
-}
-
 export interface MiniAppListBigModelResp {
-  [x: string]: any
-  bigModelReq?: BigModelReq[];
+  bigModelReq?: BigModelResp[];
 }
 
-export interface BigModelReq {
+export interface BigModelResp {
   id?: number;
   name?: string;
   image?: string;
+  description?: string;
+  useCount?: string;
+  status?: string;
+}
+
+export interface MiniListBigModelReq {
+  name?: string;
+  age?: number;
 }
 

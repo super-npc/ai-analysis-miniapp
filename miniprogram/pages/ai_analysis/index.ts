@@ -1,4 +1,4 @@
-import PictureAnalyseController, { AnalyseResp, AnalyseResult } from "./PictureAnalyseController";
+import PictureAnalyseController, { AnalyseResp, AnalyseResult } from "../../api/biz/PictureAnalyseController";
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 // pages/demo/index.ts

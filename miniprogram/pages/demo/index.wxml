@@ -7,13 +7,13 @@
   </view>
   
   <view class="menu-list">
-    <view class="menu-item" wx:for="{{menuItems}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}">
+    <view class="menu-item" wx:for="{{bigModelList}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}">
       <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
       <view class="food-info">
         <text class="food-name">{{item.name}}</text>
         <text class="food-description">{{item.description}}</text>
         <view class="price-container">
-          <text class="price">¥ {{item.price}}</text>
+          <text class="price">已用 {{item.useCount || 0}}</text>
           <text class="status">{{item.status}}</text>
         </view>
       </view>

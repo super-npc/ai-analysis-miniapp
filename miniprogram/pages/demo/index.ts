@@ -1,39 +1,9 @@
+import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/biz/MiniAppBizController';
+const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
+
 Component({
   data: {
-    menuItems: [
-      {
-        id: 1,
-        name: '白米饭',
-        description: '白米饭',
-        price: '1.00',
-        status: '已售罄',
-        image: '/images/white-rice.jpg'
-      },
-      {
-        id: 2,
-        name: '杂粮米',
-        description: '杂粮米',
-        price: '1.30',
-        status: '已售罄',
-        image: '/images/mixed-grain-rice.jpg'
-      },
-      {
-        id: 3,
-        name: '传统酱油烧肉',
-        description: '五花肉焖油煎至金黄，葱、蒜、姜',
-        price: '7.00',
-        status: '已售罄',
-        image: '/images/soy-sauce-pork.jpg'
-      },
-      {
-        id: 4,
-        name: '传统酱油烧肉（半份）',
-        description: '五花肉焖油煎至金黄，葱、蒜、姜',
-        price: '3.50',
-        status: '已售罄',
-        image: '/images/soy-sauce-pork-half.jpg'
-      }
-    ]
+    bigModelList: [] as BigModelResp[]   
   },
 
   methods: {
@@ -42,6 +12,36 @@ Component({
       wx.navigateTo({
         url: `/pages/ai_analysis/index?item=${JSON.stringify(item)}`,
       });
+    },
+    async fetchBigModelList() {
+      try {
+        const response = await MiniAppBizController.listBigModel({name:"",age:11}) as MiniAppListBigModelResp;
+        this.setData({
+          bigModelList: Array.isArray(response.bigModelReq) ? response.bigModelReq.map((item): BigModelResp => ({
+            id: Number(item.id) || 0,
+            name: item.name || '',
+            image: baseUrl + item.image || '',
+            description: item.description || '',
+            status: item.status || '',
+            useCount: item.useCount || '0'  // 添加了useCount字段
+          })) : []
+        });
+      } catch (error) {
+        console.error('获取大模型列表失败:', error);
+        wx.showToast({
+          title: '获取大模型列表失败',
+          icon: 'none'
+        });
+      }
+    },
+
+  },
+   /**
+   * 生命周期函数--在组件实例进入页面节点树时执行
+   */
+  lifetimes: {
+    attached() {
+      this.fetchBigModelList();
     }
   }
 })

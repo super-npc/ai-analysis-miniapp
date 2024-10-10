@@ -1,5 +1,5 @@
 // pages/big_model/index.ts
-import MiniAppBizController, { MiniAppListBigModelResp } from './MiniAppBizController';
+import MiniAppBizController, { MiniAppListBigModelResp } from '../../api/biz/MiniAppBizController';
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 interface BigModelItem {
