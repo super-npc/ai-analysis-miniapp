@@ -13,7 +13,7 @@ export default class PictureAnalyseController {
 }
 
 export interface AnalyseReq{
-  bigModelId: number
+  bigModelId: number | -1
 }
 
 export interface AnalyseResp{

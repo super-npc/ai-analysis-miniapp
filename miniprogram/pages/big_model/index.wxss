@@ -1,6 +1,0 @@
-/* pages/big_model/index.wxss */
-
-.block {
-  display: block;
-  margin-bottom: 32rpx;
-}

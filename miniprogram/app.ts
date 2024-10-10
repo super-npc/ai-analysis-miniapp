@@ -9,11 +9,11 @@ App<IAppOption>({
   },
   onShow() {
     // 隐藏系统的tabBar
-    wx.hideTabBar({
-      complete: (res) => {
-        console.log("隐藏tabBar" + res);
-      }
-    });
+    // wx.hideTabBar({
+    //   complete: (res) => {
+    //     console.log("隐藏tabBar" + res);
+    //   }
+    // });
   },
   onLaunch() {
     // 展示本地存储能力
@@ -26,8 +26,6 @@ App<IAppOption>({
         res.data;
       }
     });
-
-
 
 
     // 登录

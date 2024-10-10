@@ -1,10 +1,8 @@
 {
   "pages": [
-    "pages/demo/index",
     "pages/index/index",
-    "pages/big_model/index",
-    "pages/ai_analysis/index",
-    "pages/usercenter/index"
+    "pages/demo/index",
+    "pages/ai_analysis/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -30,7 +28,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/usercenter/index",
+        "pagePath": "pages/demo/index",
         "text": "我的"
       }
     ]

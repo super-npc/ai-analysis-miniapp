@@ -32,6 +32,9 @@ interface RequestConfig {
   noShowMsg?: boolean
 }
 interface ApiData {
+  traceId: string
+  commit: string
+  msg: string
   /** 接口返回数据 */
   data?: any
 }
@@ -97,20 +100,35 @@ class HttpRequest {
   // 上传文件
   public uploadFile<T>(url: string,filePath: string,data: any): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
+      const header = {
+        'appId': allBaseUrl.appId
+      } as any;
+      // 我想在动态对 header额外加上属性,如何做
+      wx.getStorage<LoginResp>({key:"loginRes",success(res){
+          const loginRes = res.data;
+          header['openid'] = loginRes.openid;
+          header['sessionKey'] = loginRes.sessionKey;
+          header['unionid'] = loginRes.unionid;
+      }});
       wx.uploadFile({
         url: url,
         filePath: filePath,
         formData: data,
         name: Math.random().toString(36).substring(2, 15),
-        header: {
-          'appId': allBaseUrl.appId
-        },
+        header: header,
         success: (res) => {
-          const apiData = res.data
-          const data = JSON.parse(apiData).data;
           if (res.statusCode === 200) {
-            resolve(data)
+            resolve(JSON.parse(res.data).data)
           } else {
+            //非200及401状态码-数据处理
+            const errMsg = JSON.parse(res.data).msg
+            console.log("捕获http异常信息:"+errMsg);
+            wx.showModal({
+              title: '上传失败',
+              content: errMsg,
+              showCancel: false,
+              confirmText: '确定'
+            });
             reject(new Error(`上传失败，状态码：${res.statusCode}`));
           }
         },
@@ -147,28 +165,50 @@ class HttpRequest {
         success: function (res) {
           // console.log('发送返回:', res) //res:{cookies, data, header, statusCode}
           const code = res.statusCode || -404
-          const apiData = res.data as ApiData
-          const data = apiData.data;
+          const apiData = res.data as unknown as ApiData // 修改此行以解决类型转换错误
+          const data1 = apiData.data;
           /** 接口请求成功*/
           if (code == 200) {
-            resolve(data)
+            resolve(data1)
           } else if (code === 401) {
             // 未授权
             !requestConfig.noShowMsg && wx.showModal({
               title: '登录失效',
               content: '登录失效，请重新登录',
-            }).then(resModa => {
-              if (resModa.confirm) { }
+              showCancel: false,
+              confirmText: '确定',
+              success: (res) => {
+                if (res.confirm) {
+                  // 用户点击确定后的操作，例如跳转到登录页面
+                  wx.navigateTo({
+                    url: '/pages/login/index'
+                  })
+                }
+              }
             })
             reject({ code, msg: '未登录', data: apiData })
           } else {
             //非200及401状态码-数据处理
-            const errMsg = _this.handerErrorStatus(code, requestConfig)
+            const errMsg = apiData.msg || _this.handerErrorStatus(code, requestConfig)
+            console.log("捕获http异常信息:"+errMsg);
+            
+            !requestConfig.noShowMsg && wx.showModal({
+              title: '请求失败',
+              content: errMsg,
+              showCancel: false,
+              confirmText: '确定'
+            });
             reject({ code, msg: errMsg, data: apiData })
           }
         },
         fail: err => {
           let msg = _this.handerError(err, requestConfig)
+          wx.showModal({
+            title: '请求错误',
+            content: msg,
+            showCancel: false,
+            confirmText: '确定'
+          });
           reject({ msg })
         }
       })
@@ -182,7 +222,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public get<T>(url: string, data?: Object, OtherConfig?: RequestConfig) {
+  public get<T>(url: string, data?: ApiData, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.GET, url, data, ...OtherConfig })
   }
 
@@ -193,18 +233,18 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public post<T>(url: string, data: Object, OtherConfig?: RequestConfig) {
+  public post<T>(url: string, data: ApiData, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.POST, url, data, ...OtherConfig })
   }
 
   /**
    * @description: delete请求函数
    * @param {string} url 请求地址
-   * @param {Object} data 请求参数
+   * @param {ApiData} data 请求参数
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public delete<T>(url: string, data: Object, OtherConfig?: RequestConfig) {
+  public delete<T>(url: string, data: ApiData, OtherConfig?: RequestConfig) { // 修改 Object 为 ApiData
     return this.request<T>({ method: HttpMethod.DELETE, url, data, ...OtherConfig })
   }
 
@@ -215,7 +255,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public put<T>(url: string, data?: Object, OtherConfig?: RequestConfig) {
+  public put<T>(url: string, data?: ApiData, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.PUT, url, data, ...OtherConfig })
   }
 

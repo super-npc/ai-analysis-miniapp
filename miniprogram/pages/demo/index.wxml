@@ -1,22 +1,24 @@
 <!--pages/demo/index.wxml-->
 <navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
-<view class="container">
-  <view class="header">
-    <text class="title">图片识别</text>
-  </view>
-  
-  <view class="menu-list">
-    <view class="menu-item" wx:for="{{bigModelList}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}">
-      <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
-      <view class="food-info">
-        <text class="food-name">{{item.name}}</text>
-        <text class="food-description">{{item.description}}</text>
-        <view class="price-container">
-          <text class="price">已用 {{item.useCount || 0}}</text>
-          <text class="status">{{item.status}}</text>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <view class="header">
+      <text class="title">图片识别</text>
+    </view>
+
+    <view class="menu-list">
+      <view class="menu-item" wx:for="{{bigModelList}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}">
+        <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="food-info">
+          <text class="food-name">{{item.name}}</text>
+          <text class="food-description">{{item.description}}</text>
+          <view class="price-container">
+            <text class="price">已用 {{item.useCount || 0}}</text>
+            <text class="status">{{item.status}}</text>
+          </view>
         </view>
       </view>
     </view>
   </view>
-</view>
+</scroll-view>

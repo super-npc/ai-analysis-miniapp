@@ -10,8 +10,12 @@ Component({
     onItemTap(event: any) {
       const item = event.currentTarget.dataset.item;
       wx.navigateTo({
-        url: `/pages/ai_analysis/index?item=${JSON.stringify(item)}`,
+        url: `/pages/ai_analysis/index`,
+        success(data) {
+          data.eventChannel.emit('acceptDataFromOpenerPage', { data: item })
+        }
       });
+      
     },
     async fetchBigModelList() {
       try {

@@ -1,3 +1,4 @@
+import { BigModelResp } from "../../api/biz/MiniAppBizController";
 import PictureAnalyseController, { AnalyseResp, AnalyseResult } from "../../api/biz/PictureAnalyseController";
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
@@ -17,10 +18,8 @@ Component({
   data: {
     showCamera: false,
     src: '',
-    modelId: 0,
-    modelText: '',
-    modelImage: '',
-    analyseResults: [] as AnalyseResult[]
+    analyseResults: [] as AnalyseResult[],
+    bigModelResp: {} as BigModelResp // 添加 BigModelResp 对象
   },
 
   /**
@@ -30,7 +29,7 @@ Component({
     error(e: any) {
       console.error('相机错误:', e.detail);
       wx.showToast({
-        title: '相机出现错误',
+        title: e.detail.errMsg || '相机出现错误',
         icon: 'none'
       });
       this.setData({
@@ -57,7 +56,7 @@ Component({
       });
 
       // 上传图片并等待分析结果
-      PictureAnalyseController.upload(picPath, { bigModelId: this.data.modelId }).then(res => {
+      PictureAnalyseController.upload(picPath, { bigModelId: this.data.bigModelResp.id || -1 }).then(res => {
         const analyseResp = res as unknown as AnalyseResp
         // 更新显示的图片和分析结果
         this.setData({
@@ -119,13 +118,10 @@ Component({
       const eventChannel = this.getOpenerEventChannel();
       if (eventChannel) {
         eventChannel.on('acceptDataFromOpenerPage', (res) => {
-          const { id, text, image } = res.data;
           this.setData({
-            modelId: id,
-            modelText: text,
-            modelImage: image
+            bigModelResp: res.data // 直接将接收到的对象赋值给 bigModelResp
           });
-          console.log('接收到的大模型数据:', { id, text, image });
+          console.log('接收到的大模型数据:', this.data.bigModelResp);
         });
       } else {
         console.error('无法获取事件通道');

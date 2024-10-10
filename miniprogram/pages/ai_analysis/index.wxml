@@ -1,35 +1,37 @@
 <!--pages/demo/index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<view class="model-text-container">
-  <text class="model-text">{{modelText}}</text>
-</view>
+<navigation-bar title="模型识别" back="{{true}}" color="black" background="#FFF"></navigation-bar>
 
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
-  <view wx:if="{{selectedItem}}">
-    <text>已选择的菜品: {{selectedItem.name}}</text>
-    <text>价格: ¥{{selectedItem.price}}</text>
-    <!-- 在这里添加更多的 AI 分析内容 -->
-  </view>
-  <view wx:else>
-    <text>未选择菜品</text>
-  </view>
+    <view class="model-text-container">
+      <text class="model-text">{{modelText}}</text>
+    </view>
+    <view class="big-model-info">
+      <view class="info-item">
+        <text class="info-label">模型名称：</text>
+        <text class="info-value">{{bigModelResp.name}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">模型描述：</text>
+        <text class="info-value">{{bigModelResp.description}}</text>
+      </view>
+    </view>
     <view class="camera-preview-container">
       <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
       <image wx:else mode="aspectFit" src="{{src || '/images/placeholder.png'}}" class="preview-image"></image>
     </view>
-    
+
     <view class="button-group">
-      <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '拍照'}}</button>
+      <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '我要拍照'}}</button>
       <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>
       <button wx:if="{{!showCamera}}" type="primary" bindtap="chooseImage">上传图片</button>
     </view>
-    <view class="analyse-results-container">
+    <view class="analyse-results-container" wx:if="{{analyseResults.length > 0}}">
       <view class="analyse-result-item" wx:for="{{analyseResults}}" wx:key="index">
         <view class="result-color" style="background-color: {{item.rgb}};"></view>
         <view class="result-label">{{item.label}}</view>
         <view class="result-details">
-          <view class="result-confidence">置信度: {{item.confidence}}</view>
+          <view class="result-confidence">置信度: {{item.confidence * 100}}%</view>
         </view>
       </view>
     </view>
