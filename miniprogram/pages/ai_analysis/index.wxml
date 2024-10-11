@@ -22,7 +22,7 @@
     <view class="button-group">
       <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '我要拍照'}}</button>
       <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>
-      <button wx:if="{{!showCamera}}" type="primary" bindtap="chooseImage">上传图片</button>
+      <button wx:if="{{!showCamera}}" type="primary" bindtap="chooseImage">选择图片</button>
     </view>
     <view class="analyse-results-container" wx:if="{{analyseResults.length > 0}}">
       <view class="analyse-result-item" wx:for="{{analyseResults}}" wx:key="index">
