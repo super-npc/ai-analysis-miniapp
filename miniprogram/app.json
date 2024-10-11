@@ -65,6 +65,7 @@
     "t-step": "tdesign-miniprogram/step-item/step-item",
     "t-grid": "tdesign-miniprogram/grid/grid",
     "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
-    "t-skeleton": "tdesign-miniprogram/skeleton/skeleton"
+    "t-skeleton": "tdesign-miniprogram/skeleton/skeleton",
+    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar"
   }
 }

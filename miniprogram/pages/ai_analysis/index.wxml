@@ -1,11 +1,9 @@
 <!--pages/demo/index.wxml-->
 <navigation-bar title="模型识别" back="{{true}}" color="black" background="#FFF"></navigation-bar>
 
+<t-notice-bar visible="{{visible}}" marquee="{{marquee2}}" content="请勿上传违规内容"></t-notice-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
-    <view class="model-text-container">
-      <text class="model-text">{{modelText}}</text>
-    </view>
     <view class="big-model-info">
       <view class="info-item">
         <text class="info-label">模型名称：</text>
