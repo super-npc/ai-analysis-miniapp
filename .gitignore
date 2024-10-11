@@ -12,3 +12,5 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+# 忽略 miniprogram_npm 目录
+miniprogram_npm/
