@@ -101,47 +101,78 @@ class HttpRequest {
   }
 
   // 上传文件
-  public uploadFile<T>(url: string,filePath: string,data: any): Promise<MyAwesomeData<T>> {
+  public uploadFile<T>(url: string, filePath: string, data: any, useCloudContainer: boolean = false): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
       const header = {
         'appId': allBaseUrl.appId
       } as any;
-      // 我想在动态对 header额外加上属性,如何做
+      
       wx.getStorage<LoginResp>({
-        key:"loginRes",
-        success(res){
+        key: "loginRes",
+        success(res) {
           const loginRes = res.data;
           header['openid'] = loginRes.openid;
           header['sessionKey'] = loginRes.sessionKey;
           header['unionid'] = loginRes.unionid;
         },
         complete() {
-          wx.uploadFile({
-            url: url,
-            filePath: filePath,
-            formData: data,
-            name: Math.random().toString(36).substring(2, 15),
-            header: header,
-            success: (res) => {
-              if (res.statusCode === 200) {
-                resolve(JSON.parse(res.data).data)
-              } else {
-                //非200及401状态码-数据处理
-                const errMsg = JSON.parse(res.data).msg
-                console.log("捕获http异常信息:"+errMsg);
-                wx.showModal({
-                  title: '上传失败',
-                  content: errMsg,
-                  showCancel: false,
-                  confirmText: '确定'
-                });
-                reject(new Error(`上传失败，状态码：${res.statusCode}`));
+          if (useCloudContainer) {
+            wx.cloud.uploadFile({
+              cloudPath: Math.random().toString(36).substring(2, 15),
+              filePath: filePath,
+              config: {
+                env: "prod-5g3l0m5je193306f"
+              },
+              header: {
+                ...header,
+                "X-WX-SERVICE": "springboot-3dxz"
+              },
+              success: (res) => {
+                if (res.statusCode === 200) {
+                  resolve(res.fileID as any);
+                } else {
+                  const errMsg = "上传失败";
+                  console.log("捕获云托管上传异常信息:" + errMsg);
+                  wx.showModal({
+                    title: '上传失败',
+                    content: errMsg,
+                    showCancel: false,
+                    confirmText: '确定'
+                  });
+                  reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
+                }
+              },
+              fail: (err) => {
+                reject(new Error('云托管上传失败：' + err.errMsg));
               }
-            },
-            fail: (err) => {
-              reject(new Error('上传失败：' + err.errMsg));
-            }
-          });
+            });
+          } else {
+            wx.uploadFile({
+              url: url,
+              filePath: filePath,
+              formData: data,
+              name: Math.random().toString(36).substring(2, 15),
+              header: header,
+              success: (res) => {
+                if (res.statusCode === 200) {
+                  resolve(JSON.parse(res.data).data)
+                } else {
+                  const errMsg = JSON.parse(res.data).msg
+                  console.log("捕获http异常信息:" + errMsg);
+                  wx.showModal({
+                    title: '上传失败',
+                    content: errMsg,
+                    showCancel: false,
+                    confirmText: '确定'
+                  });
+                  reject(new Error(`上传失败，状态码：${res.statusCode}`));
+                }
+              },
+              fail: (err) => {
+                reject(new Error('上传失败：' + err.errMsg));
+              }
+            });
+          }
         }
       });
     });
@@ -150,7 +181,7 @@ class HttpRequest {
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
     console.log("发起请求");
-    
+
     let _this = this
     return new Promise((resolve, reject) => {
       // 默认header
@@ -161,8 +192,8 @@ class HttpRequest {
       } as any;
       // 动态添加header属性
       wx.getStorage<LoginResp>({
-        key:"loginRes",
-        success(res){
+        key: "loginRes",
+        success(res) {
           const loginRes = res.data;
           header['openid'] = loginRes.openid;
           header['sessionKey'] = loginRes.sessionKey;
@@ -242,7 +273,7 @@ class HttpRequest {
   private handleOtherErrors(code: number, requestConfig: RequestConfig, apiData: ApiData, reject: Function) {
     const errMsg = apiData.msg || this.handerErrorStatus(code, requestConfig);
     console.log("捕获http异常信息:" + errMsg);
-    
+
     !requestConfig.noShowMsg && wx.showModal({
       title: '请求失败',
       content: errMsg,
