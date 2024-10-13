@@ -11,17 +11,24 @@ const envVersion = accountInfo.miniProgram.envVersion || 'release'
   */
 const GDEnvs = {
   develop: {
-    host: 'http://127.0.0.1:80',
+    // host: 'http://127.0.0.1:80',
     // host: 'http://192.168.31.141:8080',
-    imgHost: 'http://192.168.0.2:20087'
+    imgHost: 'http://192.168.0.2:20087',
+    host: '', // 调用云托管
+    /** 是否使用微信云托管 */
+    useCloudContainer: true
   },
   trial: {
     host: 'http://192.168.0.1:20086',
-    imgHost: 'http://192.168.0.2:20086'
+    imgHost: 'http://192.168.0.2:20086',
+    /** 是否使用微信云托管 */
+    useCloudContainer: true
   },
   release: {
     host: 'https://XXXXX.com',
-    imgHost: 'http://image.XXXXX.com'
+    imgHost: 'http://image.XXXXX.com',
+    /** 是否使用微信云托管 */
+    useCloudContainer: true
   },
 }
 

@@ -30,8 +30,6 @@ interface RequestConfig {
   dataType?: string
   /** 请求报错时，是否弹出message提示（默认弹出）*/
   noShowMsg?: boolean
-  /** 是否使用微信云托管 */
-  useCloudContainer?: boolean
 }
 
 interface ApiData {
@@ -116,7 +114,7 @@ class HttpRequest {
           header['unionid'] = loginRes.unionid;
         },
         complete() {
-          if (useCloudContainer) {
+          if (useCloudContainer) { // 暂时不在页面上传
             wx.cloud.uploadFile({
               cloudPath: Math.random().toString(36).substring(2, 15),
               filePath: filePath,
@@ -180,7 +178,13 @@ class HttpRequest {
 
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
-    console.log("发起请求");
+    // const c1 = new wx.cloud.Cloud({
+    //   resourceAppid: 'WXAAA', // 环境所属的账号appid
+    //   resourceEnv: 'prod_001', // 微信云托管的环境ID
+    // })
+    // await c1.init()
+    wx.cloud.init();
+    console.log("发起请求,环境:"+allBaseUrl.GDEnvs.useCloudContainer);
 
     let _this = this
     return new Promise((resolve, reject) => {
@@ -201,7 +205,8 @@ class HttpRequest {
         },
         complete() {
           // 判断是否使用微信云托管
-          if (requestConfig.useCloudContainer) {
+          if (allBaseUrl.GDEnvs.useCloudContainer) {
+            console.log("调用微信云托管:"+requestConfig.url);
             wx.cloud.callContainer({
               config: {
                 env: "prod-5g3l0m5je193306f"
@@ -209,14 +214,18 @@ class HttpRequest {
               path: requestConfig.url || '',
               header: {
                 ...header,
+                "content-type": "application/json",
                 "X-WX-SERVICE": "springboot-3dxz"
               },
               method: requestConfig.method as "OPTIONS" | "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT",
               data: requestConfig.data,
               success: function (res) {
+                console.log("微信云托管成功:"+res.data);
+                
                 _this.handleResponse(res, requestConfig, resolve, reject);
               },
               fail: err => {
+                console.log("微信云托管失败");
                 _this.handleFailure(err, requestConfig, reject);
               }
             });
