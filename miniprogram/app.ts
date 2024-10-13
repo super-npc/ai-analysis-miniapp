@@ -20,12 +20,12 @@ App<IAppOption>({
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-    const aa = wx.getStorage({
-      key: "",
-      success(res) {
-        res.data;
-      }
-    });
+    // const aa = wx.getStorage({
+    //   key: "",
+    //   success(res) {
+    //     res.data;
+    //   }
+    // });
 
 
     // 登录

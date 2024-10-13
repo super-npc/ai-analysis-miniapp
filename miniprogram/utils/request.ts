@@ -30,7 +30,10 @@ interface RequestConfig {
   dataType?: string
   /** 请求报错时，是否弹出message提示（默认弹出）*/
   noShowMsg?: boolean
+  /** 是否使用微信云托管 */
+  useCloudContainer?: boolean
 }
+
 interface ApiData {
   traceId: string
   commit: string
@@ -104,36 +107,41 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       // 我想在动态对 header额外加上属性,如何做
-      wx.getStorage<LoginResp>({key:"loginRes",success(res){
+      wx.getStorage<LoginResp>({
+        key:"loginRes",
+        success(res){
           const loginRes = res.data;
           header['openid'] = loginRes.openid;
           header['sessionKey'] = loginRes.sessionKey;
           header['unionid'] = loginRes.unionid;
-      }});
-      wx.uploadFile({
-        url: url,
-        filePath: filePath,
-        formData: data,
-        name: Math.random().toString(36).substring(2, 15),
-        header: header,
-        success: (res) => {
-          if (res.statusCode === 200) {
-            resolve(JSON.parse(res.data).data)
-          } else {
-            //非200及401状态码-数据处理
-            const errMsg = JSON.parse(res.data).msg
-            console.log("捕获http异常信息:"+errMsg);
-            wx.showModal({
-              title: '上传失败',
-              content: errMsg,
-              showCancel: false,
-              confirmText: '确定'
-            });
-            reject(new Error(`上传失败，状态码：${res.statusCode}`));
-          }
         },
-        fail: (err) => {
-          reject(new Error('上传失败：' + err.errMsg));
+        complete() {
+          wx.uploadFile({
+            url: url,
+            filePath: filePath,
+            formData: data,
+            name: Math.random().toString(36).substring(2, 15),
+            header: header,
+            success: (res) => {
+              if (res.statusCode === 200) {
+                resolve(JSON.parse(res.data).data)
+              } else {
+                //非200及401状态码-数据处理
+                const errMsg = JSON.parse(res.data).msg
+                console.log("捕获http异常信息:"+errMsg);
+                wx.showModal({
+                  title: '上传失败',
+                  content: errMsg,
+                  showCancel: false,
+                  confirmText: '确定'
+                });
+                reject(new Error(`上传失败，状态码：${res.statusCode}`));
+              }
+            },
+            fail: (err) => {
+              reject(new Error('上传失败：' + err.errMsg));
+            }
+          });
         }
       });
     });
@@ -141,6 +149,8 @@ class HttpRequest {
 
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
+    console.log("发起请求");
+    
     let _this = this
     return new Promise((resolve, reject) => {
       // 默认header
@@ -149,70 +159,108 @@ class HttpRequest {
         'content-type': contentType,
         'appId': allBaseUrl.appId
       } as any;
-      // 我想在动态对 header额外加上属性,如何做
-      wx.getStorage<LoginResp>({key:"loginRes",success(res){
+      // 动态添加header属性
+      wx.getStorage<LoginResp>({
+        key:"loginRes",
+        success(res){
           const loginRes = res.data;
           header['openid'] = loginRes.openid;
           header['sessionKey'] = loginRes.sessionKey;
           header['unionid'] = loginRes.unionid;
-      }});
-    
-      wx.request({
-        method: requestConfig.method,
-        url: `${requestConfig.url}`,
-        data: requestConfig.data,
-        header: Object.assign(header, requestConfig?.header),
-        success: function (res) {
-          // console.log('发送返回:', res) //res:{cookies, data, header, statusCode}
-          const code = res.statusCode || -404
-          const apiData = res.data as unknown as ApiData // 修改此行以解决类型转换错误
-          const data1 = apiData.data;
-          /** 接口请求成功*/
-          if (code == 200) {
-            resolve(data1)
-          } else if (code === 401) {
-            // 未授权
-            !requestConfig.noShowMsg && wx.showModal({
-              title: '登录失效',
-              content: '登录失效，请重新登录',
-              showCancel: false,
-              confirmText: '确定',
-              success: (res) => {
-                if (res.confirm) {
-                  // 用户点击确定后的操作，例如跳转到登录页面
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                }
-              }
-            })
-            reject({ code, msg: '未登录', data: apiData })
-          } else {
-            //非200及401状态码-数据处理
-            const errMsg = apiData.msg || _this.handerErrorStatus(code, requestConfig)
-            console.log("捕获http异常信息:"+errMsg);
-            
-            !requestConfig.noShowMsg && wx.showModal({
-              title: '请求失败',
-              content: errMsg,
-              showCancel: false,
-              confirmText: '确定'
-            });
-            reject({ code, msg: errMsg, data: apiData })
-          }
         },
-        fail: err => {
-          let msg = _this.handerError(err, requestConfig)
-          wx.showModal({
-            title: '请求错误',
-            content: msg,
-            showCancel: false,
-            confirmText: '确定'
-          });
-          reject({ msg })
+        complete() {
+          // 判断是否使用微信云托管
+          if (requestConfig.useCloudContainer) {
+            wx.cloud.callContainer({
+              config: {
+                env: "prod-5g3l0m5je193306f"
+              },
+              path: requestConfig.url || '',
+              header: {
+                ...header,
+                "X-WX-SERVICE": "springboot-3dxz"
+              },
+              method: requestConfig.method as "OPTIONS" | "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT",
+              data: requestConfig.data,
+              success: function (res) {
+                _this.handleResponse(res, requestConfig, resolve, reject);
+              },
+              fail: err => {
+                _this.handleFailure(err, requestConfig, reject);
+              }
+            });
+          } else {
+            wx.request({
+              method: requestConfig.method,
+              url: `${requestConfig.url}`,
+              data: requestConfig.data,
+              header: Object.assign(header, requestConfig?.header),
+              success: function (res) {
+                _this.handleResponse(res, requestConfig, resolve, reject);
+              },
+              fail: err => {
+                _this.handleFailure(err, requestConfig, reject);
+              }
+            });
+          }
         }
-      })
-    })
+      });
+    });
+  }
+
+  private handleResponse(res: any, requestConfig: RequestConfig, resolve: Function, reject: Function) {
+    const code = res.statusCode || -404;
+    const apiData = res.data as unknown as ApiData;
+    const data1 = apiData.data;
+
+    if (code == 200) {
+      resolve(data1);
+    } else if (code === 401) {
+      this.handleUnauthorized(requestConfig, reject, apiData);
+    } else {
+      this.handleOtherErrors(code, requestConfig, apiData, reject);
+    }
+  }
+
+  private handleUnauthorized(requestConfig: RequestConfig, reject: Function, apiData: ApiData) {
+    !requestConfig.noShowMsg && wx.showModal({
+      title: '登录失效',
+      content: '登录失效，请重新登录',
+      showCancel: false,
+      confirmText: '确定',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: '/pages/login/index'
+          });
+        }
+      }
+    });
+    reject({ code: 401, msg: '未登录', data: apiData });
+  }
+
+  private handleOtherErrors(code: number, requestConfig: RequestConfig, apiData: ApiData, reject: Function) {
+    const errMsg = apiData.msg || this.handerErrorStatus(code, requestConfig);
+    console.log("捕获http异常信息:" + errMsg);
+    
+    !requestConfig.noShowMsg && wx.showModal({
+      title: '请求失败',
+      content: errMsg,
+      showCancel: false,
+      confirmText: '确定'
+    });
+    reject({ code, msg: errMsg, data: apiData });
+  }
+
+  private handleFailure(err: any, requestConfig: RequestConfig, reject: Function) {
+    let msg = this.handerError(err, requestConfig);
+    wx.showModal({
+      title: '请求错误',
+      content: msg,
+      showCancel: false,
+      confirmText: '确定'
+    });
+    reject({ msg });
   }
 
   /**
@@ -222,7 +270,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public get<T>(url: string, data?: ApiData, OtherConfig?: RequestConfig) {
+  public get<T>(url: string, data?: any, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.GET, url, data, ...OtherConfig })
   }
 
@@ -233,7 +281,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public post<T>(url: string, data: ApiData, OtherConfig?: RequestConfig) {
+  public post<T>(url: string, data: any, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.POST, url, data, ...OtherConfig })
   }
 
@@ -244,7 +292,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public delete<T>(url: string, data: ApiData, OtherConfig?: RequestConfig) { // 修改 Object 为 ApiData
+  public delete<T>(url: string, data: any, OtherConfig?: RequestConfig) { // 修改 Object 为 ApiData
     return this.request<T>({ method: HttpMethod.DELETE, url, data, ...OtherConfig })
   }
 
@@ -255,7 +303,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public put<T>(url: string, data?: ApiData, OtherConfig?: RequestConfig) {
+  public put<T>(url: string, data?: any, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.PUT, url, data, ...OtherConfig })
   }
 
