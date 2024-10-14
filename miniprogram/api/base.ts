@@ -5,28 +5,25 @@
 const accountInfo = wx.getAccountInfoSync()
 const envVersion = accountInfo.miniProgram.envVersion || 'release'
 
-
 /**
    * 国地服务器
   */
 const GDEnvs = {
   develop: {
-    host: 'http://127.0.0.1:80',
-    // host: '', // 调用云托管
-    // host: 'http://192.168.31.141:8080',
-    // imgHost: 'http://192.168.0.2:20087',
-    /** 是否使用微信云托管 */
-    useCloudContainer: false
+    useCloudContainer: true,
+    host: '', // 调用云托管
+    
+    // useCloudContainer: false,
+    // host: 'https://springboot-3dxz-1725083-1259198184.ap-shanghai.run.tcloudbase.com',
+    // host: 'http://127.0.0.1:80',
   },
   trial: {
-    host: 'http://192.168.0.1:20086',
-    imgHost: 'http://192.168.0.2:20086',
+    host: '',
     /** 是否使用微信云托管 */
     useCloudContainer: true
   },
   release: {
-    host: 'https://XXXXX.com',
-    imgHost: 'http://image.XXXXX.com',
+    host: '', // 云托管不需要host
     /** 是否使用微信云托管 */
     useCloudContainer: true
   },
