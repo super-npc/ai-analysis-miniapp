@@ -24,7 +24,7 @@ Component({
           bigModelList: Array.isArray(response.bigModelReq) ? response.bigModelReq.map((item): BigModelResp => ({
             id: Number(item.id) || 0,
             name: item.name || '',
-            image: baseUrl + item.image || '',
+            image: item.image || '',
             description: item.description || '',
             status: item.status || '',
             useCount: item.useCount || '0'  // 添加了useCount字段
