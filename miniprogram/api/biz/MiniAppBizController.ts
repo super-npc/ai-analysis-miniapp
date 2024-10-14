@@ -8,6 +8,11 @@ export default class MiniAppBizController {
     )
 
 }
+export interface MiniListBigModelReq {
+  name?: string;
+  age?: number;
+}
+
 export interface MiniAppListBigModelResp {
   bigModelReq?: BigModelResp[];
 }
@@ -17,12 +22,7 @@ export interface BigModelResp {
   name?: string;
   image?: string;
   description?: string;
-  useCount?: string;
+  useCount?: number;
   status?: string;
-}
-
-export interface MiniListBigModelReq {
-  name?: string;
-  age?: number;
 }
 

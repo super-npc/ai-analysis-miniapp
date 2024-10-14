@@ -3,7 +3,7 @@
   "projectname": "ai-analysis-miniapp",
   "setting": {
     "compileHotReLoad": false,
-    "skylineRenderEnable": false,
+    "skylineRenderEnable": true,
     "urlCheck": false
   }
 }

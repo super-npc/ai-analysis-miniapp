@@ -1,5 +1,4 @@
 import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/biz/MiniAppBizController';
-const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 Component({
   data: {
@@ -27,7 +26,7 @@ Component({
             image: item.image || '',
             description: item.description || '',
             status: item.status || '',
-            useCount: item.useCount || '0'  // 添加了useCount字段
+            useCount: item.useCount || 0  // 添加了useCount字段
           })) : []
         });
       } catch (error) {

@@ -20,12 +20,11 @@
 
 .menu-list {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .menu-item {
-  width: 48%;
+  width: 100%;
   margin-bottom: 20rpx;
   background-color: #fff;
   border-radius: 10rpx;
@@ -34,13 +33,14 @@
 }
 
 .food-image {
-  width: 100%;
-  height: 200rpx;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
 }
 
 .food-info {
   padding: 10rpx;
+  flex: 1;
 }
 
 .food-name {
@@ -69,4 +69,8 @@
 .status {
   font-size: 24rpx;
   color: #888;
+}
+
+.scrollarea {
+  height: 100vh;
 }

@@ -1,5 +1,4 @@
-import $api from "./api/index";
-import { LoginResp } from "./api/system/userApi";
+import WxMiniAppUserController, { WxMaJscode2SessionResult } from "./api/system/WxMiniAppUserController";
 
 
 // app.ts
@@ -34,8 +33,8 @@ App<IAppOption>({
     wx.login({
       success: res => {
         console.log("登录:" + res.code)
-        $api.userApi.login({ code: res.code }).then((res) => {
-          const loginRes = res as unknown as LoginResp;
+        WxMiniAppUserController.login({ code: res.code }).then((res) => {
+          const loginRes = res as unknown as WxMaJscode2SessionResult;
           wx.setStorage({ key: "loginRes", data: loginRes });
         });
       },

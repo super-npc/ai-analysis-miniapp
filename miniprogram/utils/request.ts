@@ -1,5 +1,5 @@
 import { allBaseUrl } from "../api/base"
-import { LoginResp } from "../api/system/userApi"
+import { WxCloudCallContainerResp } from "../api/dto/WxCloudCallContainerResp"
 
 /**
  * @description: HTTP请求方法枚举
@@ -32,7 +32,7 @@ interface RequestConfig {
   noShowMsg?: boolean
 }
 
-interface ApiData {
+export interface ApiData {
   traceId: string
   commit: string
   msg: string
@@ -105,85 +105,79 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       
-      wx.getStorage<LoginResp>({
+      wx.getStorage({
         key: "loginRes",
         success(res) {
           const loginRes = res.data;
-          header['openid'] = loginRes.openid;
-          header['sessionKey'] = loginRes.sessionKey;
-          header['unionid'] = loginRes.unionid;
-        },
-        complete() {
-          if (useCloudContainer) { // 暂时不在页面上传
-            wx.cloud.uploadFile({
-              cloudPath: Math.random().toString(36).substring(2, 15),
-              filePath: filePath,
-              config: {
-                env: "prod-5g3l0m5je193306f"
-              },
-              header: {
-                ...header,
-                "X-WX-SERVICE": "springboot-3dxz"
-              },
-              success: (res) => {
-                if (res.statusCode === 200) {
-                  resolve(res.fileID as any);
-                } else {
-                  const errMsg = "上传失败";
-                  console.log("捕获云托管上传异常信息:" + errMsg);
-                  wx.showModal({
-                    title: '上传失败',
-                    content: errMsg,
-                    showCancel: false,
-                    confirmText: '确定'
-                  });
-                  reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
-                }
-              },
-              fail: (err) => {
-                reject(new Error('云托管上传失败：' + err.errMsg));
-              }
-            });
-          } else {
-            wx.uploadFile({
-              url: url,
-              filePath: filePath,
-              formData: data,
-              name: Math.random().toString(36).substring(2, 15),
-              header: header,
-              success: (res) => {
-                if (res.statusCode === 200) {
-                  resolve(JSON.parse(res.data).data)
-                } else {
-                  const errMsg = JSON.parse(res.data).msg
-                  console.log("捕获http异常信息:" + errMsg);
-                  wx.showModal({
-                    title: '上传失败',
-                    content: errMsg,
-                    showCancel: false,
-                    confirmText: '确定'
-                  });
-                  reject(new Error(`上传失败，状态码：${res.statusCode}`));
-                }
-              },
-              fail: (err) => {
-                reject(new Error('上传失败：' + err.errMsg));
-              }
-            });
+          if (loginRes) {
+            header['openid'] = loginRes.openid;
+            header['sessionKey'] = loginRes.sessionKey;
+            header['unionid'] = loginRes.unionid;
           }
         }
       });
+      if (useCloudContainer) { // 暂时不在页面上传
+        wx.cloud.uploadFile({
+          cloudPath: Math.random().toString(36).substring(2, 15),
+          filePath: filePath,
+          config: {
+            env: "prod-5g3l0m5je193306f"
+          },
+          header: {
+            ...header,
+            "X-WX-SERVICE": "springboot-3dxz"
+          },
+          success: (res) => {
+            if (res.statusCode === 200) {
+              resolve(res.fileID as any);
+            } else {
+              const errMsg = "上传失败";
+              console.log("捕获云托管上传异常信息:" + errMsg);
+              wx.showModal({
+                title: '上传失败',
+                content: errMsg,
+                showCancel: false,
+                confirmText: '确定'
+              });
+              reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
+            }
+          },
+          fail: (err) => {
+            reject(new Error('云托管上传失败：' + err.errMsg));
+          }
+        });
+      } else {
+        wx.uploadFile({
+          url: url,
+          filePath: filePath,
+          formData: data,
+          name: Math.random().toString(36).substring(2, 15),
+          header: header,
+          success: (res) => {
+            if (res.statusCode === 200) {
+              resolve(JSON.parse(res.data).data)
+            } else {
+              const errMsg = JSON.parse(res.data).msg
+              console.log("捕获http异常信息:" + errMsg);
+              wx.showModal({
+                title: '上传失败',
+                content: errMsg,
+                showCancel: false,
+                confirmText: '确定'
+              });
+              reject(new Error(`上传失败，状态码：${res.statusCode}`));
+            }
+          },
+          fail: (err) => {
+            reject(new Error('上传失败：' + err.errMsg));
+          }
+        });
+      }
     });
   }
 
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
-    // const c1 = new wx.cloud.Cloud({
-    //   resourceAppid: 'WXAAA', // 环境所属的账号appid
-    //   resourceEnv: 'prod_001', // 微信云托管的环境ID
-    // })
-    // await c1.init()
-    wx.cloud.init();
     console.log("发起请求,环境:"+allBaseUrl.GDEnvs.useCloudContainer);
 
     let _this = this
@@ -195,56 +189,55 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       // 动态添加header属性
-      wx.getStorage<LoginResp>({
+      wx.getStorage({
         key: "loginRes",
         success(res) {
           const loginRes = res.data;
-          header['openid'] = loginRes.openid;
-          header['sessionKey'] = loginRes.sessionKey;
-          header['unionid'] = loginRes.unionid;
-        },
-        complete() {
-          // 判断是否使用微信云托管
-          if (allBaseUrl.GDEnvs.useCloudContainer) {
-            console.log("调用微信云托管:"+requestConfig.url);
-            wx.cloud.callContainer({
-              config: {
-                env: "prod-5g3l0m5je193306f"
-              },
-              path: requestConfig.url || '',
-              header: {
-                ...header,
-                "content-type": "application/json",
-                "X-WX-SERVICE": "springboot-3dxz"
-              },
-              method: requestConfig.method as "OPTIONS" | "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT",
-              data: requestConfig.data,
-              success: function (res) {
-                console.log("微信云托管成功:"+res.data);
-                
-                _this.handleResponse(res, requestConfig, resolve, reject);
-              },
-              fail: err => {
-                console.log("微信云托管失败");
-                _this.handleFailure(err, requestConfig, reject);
-              }
-            });
-          } else {
-            wx.request({
-              method: requestConfig.method,
-              url: `${requestConfig.url}`,
-              data: requestConfig.data,
-              header: Object.assign(header, requestConfig?.header),
-              success: function (res) {
-                _this.handleResponse(res, requestConfig, resolve, reject);
-              },
-              fail: err => {
-                _this.handleFailure(err, requestConfig, reject);
-              }
-            });
+          if (loginRes) {
+            header['openid'] = loginRes.openid;
+            header['sessionKey'] = loginRes.sessionKey;
+            header['unionid'] = loginRes.unionid;
           }
         }
       });
+      if (allBaseUrl.GDEnvs.useCloudContainer) {
+        console.log("调用微信云托管:"+requestConfig.url);
+        wx.cloud.callContainer({
+          config: {
+            env: "prod-5g3l0m5je193306f"
+          },
+          path: requestConfig.url || '',
+          header: {
+            ...header,
+            "content-type": "application/json",
+            "X-WX-SERVICE": "springboot-3dxz"
+          },
+          method: requestConfig.method as "OPTIONS" | "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT",
+          data: requestConfig.data,
+          success: function (res) {
+            const typedRes = res as unknown as WxCloudCallContainerResp;
+            console.log("微信云托管成功:"+JSON.stringify(typedRes.data));
+            _this.handleResponse(typedRes, requestConfig, resolve, reject);
+          },
+          fail: err => {
+            console.log("微信云托管失败");
+            _this.handleFailure(err, requestConfig, reject);
+          }
+        });
+      } else {
+        wx.request({
+          method: requestConfig.method,
+          url: `${requestConfig.url}`,
+          data: requestConfig.data,
+          header: Object.assign(header, requestConfig?.header),
+          success: function (res) {
+            _this.handleResponse(res, requestConfig, resolve, reject);
+          },
+          fail: err => {
+            _this.handleFailure(err, requestConfig, reject);
+          }
+        });
+      }
     });
   }
 
