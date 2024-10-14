@@ -99,7 +99,7 @@ class HttpRequest {
   }
 
   // 上传文件
-  public uploadFile<T>(url: string, filePath: string, data: any, useCloudContainer: boolean = false): Promise<MyAwesomeData<T>> {
+  public uploadFile<T>(url: string, filePath: string, data: any): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
       const header = {
         'appId': allBaseUrl.appId
@@ -116,7 +116,8 @@ class HttpRequest {
           }
         }
       });
-      if (useCloudContainer) { // 暂时不在页面上传
+      if (false) { 
+        // 要做图片上传到xfile逻辑,暂时不使用wx.cloud上传
         wx.cloud.uploadFile({
           cloudPath: Math.random().toString(36).substring(2, 15),
           filePath: filePath,
@@ -154,11 +155,13 @@ class HttpRequest {
           name: Math.random().toString(36).substring(2, 15),
           header: header,
           success: (res) => {
+            debugger
             if (res.statusCode === 200) {
               resolve(JSON.parse(res.data).data)
             } else {
+              //非200及401状态码-数据处理
               const errMsg = JSON.parse(res.data).msg
-              console.log("捕获http异常信息:" + errMsg);
+              console.log("捕获http异常信息:"+errMsg);
               wx.showModal({
                 title: '上传失败',
                 content: errMsg,
@@ -169,6 +172,7 @@ class HttpRequest {
             }
           },
           fail: (err) => {
+            debugger
             reject(new Error('上传失败：' + err.errMsg));
           }
         });

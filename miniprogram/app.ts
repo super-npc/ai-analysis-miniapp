@@ -17,7 +17,7 @@ App<IAppOption>({
   onLaunch() {
     // 使用callContainer前一定要init一下，全局执行一次即可
     wx.cloud.init({
-      env: 'prod-5g3l0m5je193306f',
+      env: "prod-5g3l0m5je193306f",
       traceUser: true
     });
     // 展示本地存储能力
