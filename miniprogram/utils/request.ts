@@ -116,38 +116,61 @@ class HttpRequest {
           }
         }
       });
-      if (false) { 
-        // 要做图片上传到xfile逻辑,暂时不使用wx.cloud上传
-        wx.cloud.uploadFile({
-          cloudPath: Math.random().toString(36).substring(2, 15),
-          filePath: filePath,
+      if (allBaseUrl.GDEnvs.useCloudContainer) { 
+        wx.cloud.callContainer({
           config: {
             env: "prod-5g3l0m5je193306f"
           },
+          path: url || '',
           header: {
             ...header,
+            "content-type": "application/json",
             "X-WX-SERVICE": "springboot-3dxz"
           },
-          success: (res) => {
-            if (res.statusCode === 200) {
-              resolve(res.fileID as any);
-            } else {
-              const errMsg = "上传失败";
-              console.log("捕获云托管上传异常信息:" + errMsg);
-              wx.showModal({
-                title: '上传失败',
-                content: errMsg,
-                showCancel: false,
-                confirmText: '确定'
-              });
-              reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
-            }
+          // todo 需要将图片转成base64,没有其他办法了
+          method: "POST",
+          success: function (res) {
+            const typedRes = res as unknown as WxCloudCallContainerResp;
+            console.log("微信云托管成功:"+JSON.stringify(typedRes.data));
+            // _this.handleResponse(typedRes, requestConfig, resolve, reject);
           },
-          fail: (err) => {
-            reject(new Error('云托管上传失败：' + err.errMsg));
+          fail: err => {
+            console.log("微信云托管失败");
+            // _this.handleFailure(err, requestConfig, reject);
           }
         });
+        // 要做图片上传到xfile逻辑,暂时不使用wx.cloud上传
+        // wx.cloud.uploadFile({
+        //   cloudPath: Math.random().toString(36).substring(2, 15),
+        //   filePath: filePath,
+        //   config: {
+        //     env: "prod-5g3l0m5je193306f"
+        //   },
+        //   header: {
+        //     ...header,
+        //     "X-WX-SERVICE": "springboot-3dxz"
+        //   },
+        //   success: (res) => {
+        //     if (res.statusCode === 200) {
+        //       resolve(res.fileID as any);
+        //     } else {
+        //       const errMsg = "上传失败";
+        //       console.log("捕获云托管上传异常信息:" + errMsg);
+        //       wx.showModal({
+        //         title: '上传失败',
+        //         content: errMsg,
+        //         showCancel: false,
+        //         confirmText: '确定'
+        //       });
+        //       reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
+        //     }
+        //   },
+        //   fail: (err) => {
+        //     reject(new Error('云托管上传失败：' + err.errMsg));
+        //   }
+        // });
       } else {
+        // 原生上传
         wx.uploadFile({
           url: url,
           filePath: filePath,
