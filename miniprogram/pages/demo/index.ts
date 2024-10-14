@@ -16,6 +16,14 @@ Component({
       });
       
     },
+    getUrl(link: string): string {
+      if (link) { } else return ''
+      if (link.substring(0, 5) == 'cloud') { } else return link
+      var arr = link.split('/')
+      arr[0] = 'https:'
+      arr[2] = arr[2].split('.')[1] + '.tcb.qcloud.la'
+      return arr.join('/')
+    },
     async fetchBigModelList() {
       try {
         const response = await MiniAppBizController.listBigModel({name:"",age:11}) as MiniAppListBigModelResp;
@@ -23,7 +31,7 @@ Component({
           bigModelList: Array.isArray(response.bigModelReq) ? response.bigModelReq.map((item): BigModelResp => ({
             id: Number(item.id) || 0,
             name: item.name || '',
-            image: item.image || '',
+            image: this.getUrl(item.image || ''),
             description: item.description || '',
             status: item.status || '',
             useCount: item.useCount || 0  // 添加了useCount字段
