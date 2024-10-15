@@ -61,6 +61,8 @@ Component({
         mask: true
       });
 
+      
+
       // 将文件路径转换为base64
       wx.getFileSystemManager().readFile({
         filePath: picPath,

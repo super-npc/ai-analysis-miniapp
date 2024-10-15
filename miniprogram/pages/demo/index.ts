@@ -1,4 +1,5 @@
 import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/controller/MiniAppBizController';
+import CloudStorageUtil from '../../utils/CloudStorageUtil';
 
 Component({
   data: {
@@ -14,15 +15,6 @@ Component({
           data.eventChannel.emit('acceptDataFromOpenerPage', { data: item })
         }
       });
-      
-    },
-    getUrl(link: string): string {
-      if (link) { } else return ''
-      if (link.substring(0, 5) == 'cloud') { } else return link
-      var arr = link.split('/')
-      arr[0] = 'https:'
-      arr[2] = arr[2].split('.')[1] + '.tcb.qcloud.la'
-      return arr.join('/')
     },
     async fetchBigModelList() {
       try {
@@ -31,7 +23,7 @@ Component({
           bigModelList: Array.isArray(response.bigModelReq) ? response.bigModelReq.map((item): BigModelResp => ({
             id: Number(item.id) || 0,
             name: item.name || '',
-            image: this.getUrl(item.image || ''),
+            image: CloudStorageUtil.convertFileIdToUrl(item.image || ''),
             description: item.description || '',
             status: item.status || '',
             useCount: item.useCount || 0  // 添加了useCount字段

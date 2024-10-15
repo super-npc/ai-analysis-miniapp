@@ -1,5 +1,7 @@
 import { allBaseUrl } from "../api/base"
+import { ProjectInfoResp } from "../api/controller/MiniAppBaseController"
 import { WxCloudCallContainerResp } from "../api/dto/WxCloudCallContainerResp"
+import ProjectInfoRespCache from "../cache/ProjectInfoRespCache"
 
 /**
  * @description: HTTP请求方法枚举
@@ -123,6 +125,12 @@ class HttpRequest {
         }
       });
       if (true) {
+        // 1. 先构建对象存储的key
+        ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) =>{
+          projectInfo.applicationName;
+        }).catch(e =>{
+          console.error("上传前无法获取后台项目配置:"+e);
+        })
         const key = "";
         wx.cloud.uploadFile({
           cloudPath: Math.random().toString(36).substring(2, 15),
