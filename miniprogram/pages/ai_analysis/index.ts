@@ -2,8 +2,7 @@ import MiniAppBizController, { BigModelResp } from "../../api/controller/MiniApp
 import { AnalyseResp, AnalyseResult } from "../../api/controller/MiniAppBizController";
 import CloudController from "../../api/system/CloudController";
 import CloudStorageUtil from "../../utils/CloudStorageUtil";
-import { CloudUploadRes, httpRequest, MyAwesomeData } from "../../utils/request";
-const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
+import { CloudUploadRes, } from "../../utils/request";
 
 // pages/demo/index.ts
 Component({
@@ -123,6 +122,15 @@ Component({
           });
         }
       });
+    },
+
+    previewImage() {
+      if (this.data.src) {
+        wx.previewImage({
+          urls: [this.data.src],
+          current: this.data.src
+        });
+      }
     }
   },
   lifetimes: {

@@ -16,7 +16,14 @@
     </view>
     <view class="camera-preview-container">
       <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
-      <image wx:else mode="aspectFit" src="{{src || '/images/default.webp'}}" class="preview-image"></image>
+      <t-image
+        wx:else
+        t-class="preview-image"
+        src="{{src || '/images/default.webp'}}"
+        mode="aspectFit"
+        show-menu-by-longpress
+        bind:tap="previewImage"
+      />
     </view>
 
     <view class="button-group">
