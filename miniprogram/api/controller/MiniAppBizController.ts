@@ -7,7 +7,7 @@ export default class MiniAppBizController {
       baseUrl + '/wx/miniapp/biz/list-big-model', data
     )
 
-static analyse = <AnalyseResp>(data: AnalyseReq) =>
+  static analyse = <AnalyseResp>(data: AnalyseReq) =>
     httpRequest.post<AnalyseResp>(
       baseUrl + '/wx/miniapp/biz/analyse', data
     )

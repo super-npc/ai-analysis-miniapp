@@ -1,7 +1,6 @@
-import WxMiniAppUserController, { WxMaJscode2SessionResult } from "./api/controller/WxMiniAppUserController";
+import WxMiniAppUserController, { ProjectInfoResp, WxMaJscode2SessionResult } from "./api/controller/MiniAppBaseController";
+import ProjectInfoRespCache from "./cache/ProjectInfoRespCache";
 
-
-// app.ts
 App<IAppOption>({
   globalData: {
 
@@ -20,27 +19,25 @@ App<IAppOption>({
       env: "prod-5g3l0m5je193306f",
       traceUser: true
     });
-    // 展示本地存储能力
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-    // const aa = wx.getStorage({
-    //   key: "",
-    //   success(res) {
-    //     res.data;
-    //   }
-    // });
-
 
     // 登录
     wx.login({
       success: res => {
         console.log("登录:" + res.code)
-        WxMiniAppUserController.login({ code: res.code }).then((res) => {
-          const loginRes = res as unknown as WxMaJscode2SessionResult;
-          wx.setStorage({ key: "loginRes", data: loginRes });
+        WxMiniAppUserController.login({ code: res.code }).then((res: unknown | WxMaJscode2SessionResult) => {
+          wx.setStorage({ key: "loginRes", data: res });
         });
       },
     })
+
+    WxMiniAppUserController.getProjectInfo().then(res => {
+      // 存储数据
+      ProjectInfoRespCache.saveStorage(res as ProjectInfoResp);
+      // 获取数据
+      ProjectInfoRespCache.getStorage().then((projectInfoRespStorage: ProjectInfoResp) => {
+        const applicationName = projectInfoRespStorage.applicationName;
+        console.log('读取:' + applicationName);
+      });
+    });
   },
 })
