@@ -1,5 +1,5 @@
-import MiniAppBizController, { BigModelResp } from "../../api/biz/MiniAppBizController";
-import PictureAnalyseController, { AnalyseResp, AnalyseResult } from "../../api/biz/PictureAnalyseController";
+import MiniAppBizController, { BigModelResp } from "../../api/controller/MiniAppBizController";
+import { AnalyseResp, AnalyseResult } from "../../api/controller/MiniAppBizController";
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 // pages/demo/index.ts
@@ -71,7 +71,7 @@ Component({
           // 更新picPath为base64编码
           // picPath = `data:image/jpeg;base64,${base64}`;
 
-          MiniAppBizController.analyse({bigModelId:this.data.bigModelResp.id,imageBase64:base64}).then(res => {
+          MiniAppBizController.analyse({bigModelId:this.data.bigModelResp.id,objectId:base64}).then(res => {
             const analyseResp = res as unknown as AnalyseResp
             // 更新显示的图片和分析结果
             this.setData({

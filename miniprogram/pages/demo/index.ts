@@ -1,4 +1,4 @@
-import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/biz/MiniAppBizController';
+import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/controller/MiniAppBizController';
 
 Component({
   data: {

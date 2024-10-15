@@ -1,4 +1,4 @@
-import WxMiniAppUserController, { WxMaJscode2SessionResult } from "./api/system/WxMiniAppUserController";
+import WxMiniAppUserController, { WxMaJscode2SessionResult } from "./api/controller/WxMiniAppUserController";
 
 
 // app.ts

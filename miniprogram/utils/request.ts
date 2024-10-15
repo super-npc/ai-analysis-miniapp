@@ -98,13 +98,19 @@ class HttpRequest {
     return msg
   }
 
-  // 上传文件
+  /**
+   * 上传,只能通过上传到云存储
+   * 如果将图片打成base64通过post请求传递则会
+   * @param url errCode: -606001 | errMsg: 请求包大小超过 100KB
+   * 解决方法：压缩请求包大小。请勿在请求体中加入图片/视频/文件。上述类型请先上传到「对象存储」后，仅将fileID通过请求体传给后端的云托管服务。
+   * @param filePath 
+   * @param data 
+   */
   public uploadFile<T>(url: string, filePath: string, data: any): Promise<MyAwesomeData<T>> {
     return new Promise((resolve, reject) => {
       const header = {
         'appId': allBaseUrl.appId
       } as any;
-      
       wx.getStorage({
         key: "loginRes",
         success(res) {
@@ -116,59 +122,38 @@ class HttpRequest {
           }
         }
       });
-      if (allBaseUrl.GDEnvs.useCloudContainer) { 
-        wx.cloud.callContainer({
+      if (true) {
+        const key = "";
+        wx.cloud.uploadFile({
+          cloudPath: Math.random().toString(36).substring(2, 15),
+          filePath: filePath,
           config: {
             env: "prod-5g3l0m5je193306f"
           },
-          path: url || '',
           header: {
             ...header,
-            "content-type": "application/json",
             "X-WX-SERVICE": "springboot-3dxz"
           },
-          // todo 需要将图片转成base64,没有其他办法了
-          method: "POST",
-          success: function (res) {
-            const typedRes = res as unknown as WxCloudCallContainerResp;
-            console.log("微信云托管成功:"+JSON.stringify(typedRes.data));
-            // _this.handleResponse(typedRes, requestConfig, resolve, reject);
+          success: (res) => {
+            if (res.statusCode === 200) {
+              resolve(res.fileID as any);
+              // 上传完成再通过url调用给具体业务
+            } else {
+              const errMsg = "上传失败";
+              console.log("捕获云托管上传异常信息:" + errMsg);
+              wx.showModal({
+                title: '上传失败',
+                content: errMsg,
+                showCancel: false,
+                confirmText: '确定'
+              });
+              reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
+            }
           },
-          fail: err => {
-            console.log("微信云托管失败");
-            // _this.handleFailure(err, requestConfig, reject);
+          fail: (err) => {
+            reject(new Error('云托管上传失败：' + err.errMsg));
           }
         });
-        // 要做图片上传到xfile逻辑,暂时不使用wx.cloud上传
-        // wx.cloud.uploadFile({
-        //   cloudPath: Math.random().toString(36).substring(2, 15),
-        //   filePath: filePath,
-        //   config: {
-        //     env: "prod-5g3l0m5je193306f"
-        //   },
-        //   header: {
-        //     ...header,
-        //     "X-WX-SERVICE": "springboot-3dxz"
-        //   },
-        //   success: (res) => {
-        //     if (res.statusCode === 200) {
-        //       resolve(res.fileID as any);
-        //     } else {
-        //       const errMsg = "上传失败";
-        //       console.log("捕获云托管上传异常信息:" + errMsg);
-        //       wx.showModal({
-        //         title: '上传失败',
-        //         content: errMsg,
-        //         showCancel: false,
-        //         confirmText: '确定'
-        //       });
-        //       reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
-        //     }
-        //   },
-        //   fail: (err) => {
-        //     reject(new Error('云托管上传失败：' + err.errMsg));
-        //   }
-        // });
       } else {
         // 原生上传
         wx.uploadFile({
@@ -178,13 +163,12 @@ class HttpRequest {
           name: Math.random().toString(36).substring(2, 15),
           header: header,
           success: (res) => {
-            debugger
             if (res.statusCode === 200) {
               resolve(JSON.parse(res.data).data)
             } else {
               //非200及401状态码-数据处理
               const errMsg = JSON.parse(res.data).msg
-              console.log("捕获http异常信息:"+errMsg);
+              console.log("捕获http异常信息:" + errMsg);
               wx.showModal({
                 title: '上传失败',
                 content: errMsg,
@@ -195,7 +179,6 @@ class HttpRequest {
             }
           },
           fail: (err) => {
-            debugger
             reject(new Error('上传失败：' + err.errMsg));
           }
         });
@@ -205,7 +188,7 @@ class HttpRequest {
 
   // 服务器接口请求
   public request<T>(requestConfig: RequestConfig): Promise<MyAwesomeData<T>> {
-    console.log("发起请求,环境:"+allBaseUrl.GDEnvs.useCloudContainer);
+    console.log("发起请求,环境:" + allBaseUrl.GDEnvs.useCloudContainer);
 
     let _this = this
     return new Promise((resolve, reject) => {
@@ -228,7 +211,7 @@ class HttpRequest {
         }
       });
       if (allBaseUrl.GDEnvs.useCloudContainer) {
-        console.log("调用微信云托管:"+requestConfig.url);
+        console.log("调用微信云托管:" + requestConfig.url);
         wx.cloud.callContainer({
           config: {
             env: "prod-5g3l0m5je193306f"
@@ -243,10 +226,11 @@ class HttpRequest {
           data: requestConfig.data,
           success: function (res) {
             const typedRes = res as unknown as WxCloudCallContainerResp;
-            console.log("微信云托管成功:"+JSON.stringify(typedRes.data));
+            console.log("微信云托管成功:" + JSON.stringify(typedRes.data));
             _this.handleResponse(typedRes, requestConfig, resolve, reject);
           },
           fail: err => {
+            debugger
             console.log("微信云托管失败");
             _this.handleFailure(err, requestConfig, reject);
           }
@@ -341,7 +325,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public post<T>(url: string, data: any, OtherConfig?: RequestConfig) {
+  public post<T>(url: string, data?: any, OtherConfig?: RequestConfig) {
     return this.request<T>({ method: HttpMethod.POST, url, data, ...OtherConfig })
   }
 
@@ -352,7 +336,7 @@ class HttpRequest {
    * @param {RequestConfig} OtherConfig request其他配置
    * @return {*}
    */
-  public delete<T>(url: string, data: any, OtherConfig?: RequestConfig) { // 修改 Object 为 ApiData
+  public delete<T>(url: string, data?: any, OtherConfig?: RequestConfig) { // 修改 Object 为 ApiData
     return this.request<T>({ method: HttpMethod.DELETE, url, data, ...OtherConfig })
   }
 
