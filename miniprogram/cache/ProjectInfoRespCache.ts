@@ -2,7 +2,7 @@ import { ProjectInfoResp } from "../api/controller/MiniAppBaseController";
 
 const PROJECT_INFO_KEY = "MiniAppBaseController.projectInfoResp";
 
-export default class MiniAppBizController {
+export default class ProjectInfoRespCache {
   // 存储数据的方法
   static saveStorage = (data: ProjectInfoResp): Promise<void> => {
     return new Promise((resolve, reject) => {
