@@ -51,6 +51,10 @@ export interface MyAwesomeData<T> {
   data: T
 }
 
+export interface CloudUploadRes{
+  fileID: string
+}
+
 class HttpRequest {
   private static instance: HttpRequest
   private constructor() { }
@@ -104,7 +108,30 @@ class HttpRequest {
   private generateCloudStorageKey(projectInfo: ProjectInfoResp): string {
     const currentDate = new Date();
     const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-    return `/${projectInfo.applicationName}/image/${dateString}/${Math.random().toString(36).substring(2, 15)}.png`;
+    return `${projectInfo.applicationName}/miniapp/${allBaseUrl.appId}/image/${dateString}/${Math.random().toString(36).substring(2, 15)}.png`;
+  }
+
+  public uploadCloud<CloudUploadRes>(filePath: string): Promise<CloudUploadRes> {
+    return new Promise((resolve, reject) => {
+        // 1. 先构建对象存储的key
+        ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) =>{
+          wx.cloud.uploadFile({
+            cloudPath: this.generateCloudStorageKey(projectInfo),
+            filePath: filePath,
+            config: {
+              env: "prod-5g3l0m5je193306f"
+            },
+            success: (res) => {
+              resolve(res as any);
+            },
+            fail: (err) => {
+              reject(new Error('云托管上传失败：' + err.errMsg));
+            }
+          });
+        }).catch(e =>{
+          console.error("上传前无法获取后台项目配置:"+e);
+        })
+    });
   }
 
   /**

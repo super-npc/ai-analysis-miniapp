@@ -1,5 +1,8 @@
 import MiniAppBizController, { BigModelResp } from "../../api/controller/MiniAppBizController";
 import { AnalyseResp, AnalyseResult } from "../../api/controller/MiniAppBizController";
+import CloudController from "../../api/system/CloudController";
+import CloudStorageUtil from "../../utils/CloudStorageUtil";
+import { CloudUploadRes, httpRequest, MyAwesomeData } from "../../utils/request";
 const baseUrl = require('../../api/base').allBaseUrl.GDEnvs.host
 
 // pages/demo/index.ts
@@ -61,58 +64,24 @@ Component({
         mask: true
       });
 
-      
-
-      // 将文件路径转换为base64
-      wx.getFileSystemManager().readFile({
-        filePath: picPath,
-        encoding: 'base64',
-        success: (res) => {
-          const base64 = res.data as string;
-          console.log("图片base64编码:", base64);
-          // 更新picPath为base64编码
-          // picPath = `data:image/jpeg;base64,${base64}`;
-
-          MiniAppBizController.analyse({bigModelId:this.data.bigModelResp.id,objectId:base64}).then(res => {
-            const analyseResp = res as unknown as AnalyseResp
-            // 更新显示的图片和分析结果
-            this.setData({
-              src: baseUrl + analyseResp.analyseFinishPath,
-              analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
-                ...result,
-                rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
-              })) : []
-            });
-          }).finally(() => {
-            // 无论成功与否，都隐藏加载中遮罩层
-            wx.hideLoading();
+      CloudController.uploadCloud(picPath).then((cloudRes: any) =>{
+        const uploadRes = cloudRes as CloudUploadRes;
+        MiniAppBizController.analyse({bigModelId:this.data.bigModelResp.id,objectId:uploadRes.fileID}).then(res => {
+          const analyseResp = res as unknown as AnalyseResp
+          // 更新显示的图片和分析结果
+          const picUrl = CloudStorageUtil.convertFileIdToUrl(analyseResp.analyseFinishPath || '');
+          this.setData({
+            src: picUrl,
+            analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
+              ...result,
+              rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
+            })) : []
           });
-          // 继续执行后续的分析逻辑
-        },
-        fail: (error) => {
-          console.error("读取文件失败:", error);
-          wx.showToast({
-            title: '读取图片失败',
-            icon: 'none'
-          });
-        }
-      });
-      
-      // 上传图片并等待分析结果
-      // PictureAnalyseController.upload(picPath, { bigModelId: this.data.bigModelResp.id || -1 }).then(res => {
-      //   const analyseResp = res as unknown as AnalyseResp
-      //   // 更新显示的图片和分析结果
-      //   this.setData({
-      //     src: baseUrl + analyseResp.analyseFinishPath,
-      //     analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
-      //       ...result,
-      //       rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
-      //     })) : []
-      //   });
-      // }).finally(() => {
-      //   // 无论成功与否，都隐藏加载中遮罩层
-      //   wx.hideLoading();
-      // });
+        }).finally(() => {
+          // 无论成功与否，都隐藏加载中遮罩层
+          wx.hideLoading();
+        });
+      })
     },
 
     takePhoto() {
