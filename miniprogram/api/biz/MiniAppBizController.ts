@@ -7,10 +7,31 @@ export default class MiniAppBizController {
       baseUrl + '/wx/miniapp/biz/list-big-model', data
     )
 
+  static analyse = <AnalyseResp>(data: AnalyseReq) =>
+    httpRequest.post<AnalyseResp>(
+      baseUrl + '/wx/miniapp/biz/analyse', data
+    )
+
 }
+export interface AnalyseReq {
+  bigModelId?: number;
+  imageBase64?: string;
+}
+
 export interface MiniListBigModelReq {
   name?: string;
   age?: number;
+}
+
+export interface AnalyseResp {
+  analyseFinishPath?: string;
+  analyseResults?: AnalyseResult[];
+}
+
+export interface AnalyseResult {
+  label?: string;
+  rgb?: string;
+  confidence?: string;
 }
 
 export interface MiniAppListBigModelResp {

@@ -10,12 +10,12 @@ const envVersion = accountInfo.miniProgram.envVersion || 'release'
   */
 const GDEnvs = {
   develop: {
-    useCloudContainer: true,
-    host: '', // 调用云托管
+    // useCloudContainer: true,
+    // host: '', // 调用云托管
     
-    // useCloudContainer: false,
+    useCloudContainer: false,
+    host: 'http://127.0.0.1:80',
     // host: 'https://springboot-3dxz-1725083-1259198184.ap-shanghai.run.tcloudbase.com',
-    // host: 'http://127.0.0.1:80',
   },
   trial: {
     host: '',
