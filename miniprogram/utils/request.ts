@@ -100,6 +100,13 @@ class HttpRequest {
     return msg
   }
 
+  // 生成云存储key
+  private generateCloudStorageKey(projectInfo: ProjectInfoResp): string {
+    const currentDate = new Date();
+    const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    return `/${projectInfo.applicationName}/image/${dateString}/${Math.random().toString(36).substring(2, 15)}.png`;
+  }
+
   /**
    * 上传,只能通过上传到云存储
    * 如果将图片打成base64通过post请求传递则会
@@ -127,41 +134,39 @@ class HttpRequest {
       if (true) {
         // 1. 先构建对象存储的key
         ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) =>{
-          projectInfo.applicationName;
+          wx.cloud.uploadFile({
+            cloudPath: this.generateCloudStorageKey(projectInfo),
+            filePath: filePath,
+            config: {
+              env: "prod-5g3l0m5je193306f"
+            },
+            header: {
+              ...header,
+              "X-WX-SERVICE": "springboot-3dxz"
+            },
+            success: (res) => {
+              if (res.statusCode === 200) {
+                resolve(res.fileID as any);
+                // 上传完成再通过url调用给具体业务
+              } else {
+                const errMsg = "上传失败";
+                console.log("捕获云托管上传异常信息:" + errMsg);
+                wx.showModal({
+                  title: '上传失败',
+                  content: errMsg,
+                  showCancel: false,
+                  confirmText: '确定'
+                });
+                reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
+              }
+            },
+            fail: (err) => {
+              reject(new Error('云托管上传失败：' + err.errMsg));
+            }
+          });
         }).catch(e =>{
           console.error("上传前无法获取后台项目配置:"+e);
         })
-        const key = "";
-        wx.cloud.uploadFile({
-          cloudPath: Math.random().toString(36).substring(2, 15),
-          filePath: filePath,
-          config: {
-            env: "prod-5g3l0m5je193306f"
-          },
-          header: {
-            ...header,
-            "X-WX-SERVICE": "springboot-3dxz"
-          },
-          success: (res) => {
-            if (res.statusCode === 200) {
-              resolve(res.fileID as any);
-              // 上传完成再通过url调用给具体业务
-            } else {
-              const errMsg = "上传失败";
-              console.log("捕获云托管上传异常信息:" + errMsg);
-              wx.showModal({
-                title: '上传失败',
-                content: errMsg,
-                showCancel: false,
-                confirmText: '确定'
-              });
-              reject(new Error(`云托管上传失败，状态码：${res.statusCode}`));
-            }
-          },
-          fail: (err) => {
-            reject(new Error('云托管上传失败：' + err.errMsg));
-          }
-        });
       } else {
         // 原生上传
         wx.uploadFile({
