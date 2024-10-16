@@ -26,11 +26,6 @@ export interface BigModelResp {
   status?: string;
 }
 
-export interface MiniListBigModelReq {
-  name?: string;
-  age?: number;
-}
-
 export interface AnalyseResp {
   analyseFinishPath?: string;
   analyseResults?: AnalyseResult[];
@@ -40,6 +35,11 @@ export interface AnalyseResult {
   label?: string;
   rgb?: string;
   confidence?: string;
+}
+
+export interface MiniListBigModelReq {
+  name?: string;
+  age?: number;
 }
 
 export interface AnalyseReq {

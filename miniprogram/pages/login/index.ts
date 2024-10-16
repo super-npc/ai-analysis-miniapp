@@ -1,4 +1,4 @@
-import MiniAppBaseController, { WxMaJscode2SessionResult } from "../../api/controller/MiniAppBaseController";
+import MiniAppBaseController, { WxMaSessionResp } from "../../api/controller/MiniAppBaseController";
 import LoginResCache from "../../cache/LoginResCache";
 
 // pages/login/index.ts
@@ -41,36 +41,20 @@ Component({
         success: res => {
           debugger
           console.log("登录:" + res.code)
-          MiniAppBaseController.login({ code: res.code }).then((loginResThen: unknown | WxMaJscode2SessionResult) => {
-            const loginRes = loginResThen as WxMaJscode2SessionResult;
+          MiniAppBaseController.login({ code: res.code }).then((loginResThen: unknown | WxMaSessionResp) => {
+            const loginRes = loginResThen as WxMaSessionResp;
             LoginResCache.saveStorage(loginRes);
 
-            wx.getUserInfo({
-              success: (userInfoRes) => {
-                debugger
-                MiniAppBaseController.getUserInfo({ openId: loginRes.openid, encryptedData: userInfoRes.encryptedData,
-                   rawData: userInfoRes.rawData, sessionKey: loginRes.sessionKey, signature: userInfoRes.signature ,iv: userInfoRes.iv}).then(res =>{
-                     debugger
-                     console.log(res);
-                   })
-                console.log('用户名称:', userInfoRes.userInfo.nickName);
+            // 登录成功后跳转到用户中心页面
+            wx.switchTab({
+              url: '/pages/usercenter/index',
+              success: () => {
+                console.log('成功跳转到用户中心页面');
               },
-              fail: (err) => {
-                debugger
-                console.error('获取用户信息失败:', err);
+              fail: (error) => {
+                console.error('跳转到用户中心页面失败:', error);
               }
             });
-
-            // // 登录成功后跳转到用户中心页面
-            // wx.switchTab({
-            //   url: '/pages/usercenter/index',
-            //   success: () => {
-            //     console.log('成功跳转到用户中心页面');
-            //   },
-            //   fail: (error) => {
-            //     console.error('跳转到用户中心页面失败:', error);
-            //   }
-            // });
           });
         },
       })

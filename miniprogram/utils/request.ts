@@ -1,6 +1,7 @@
 import { allBaseUrl } from "../api/base"
-import { ProjectInfoResp } from "../api/controller/MiniAppBaseController"
+import { ProjectInfoResp, WxMaSessionResp } from "../api/controller/MiniAppBaseController"
 import { WxCloudCallContainerResp } from "../api/dto/WxCloudCallContainerResp"
+import LoginResCache from "../cache/LoginResCache"
 import ProjectInfoRespCache from "../cache/ProjectInfoRespCache"
 
 /**
@@ -51,7 +52,7 @@ export interface MyAwesomeData<T> {
   data: T
 }
 
-export interface CloudUploadRes{
+export interface CloudUploadRes {
   fileID: string
 }
 
@@ -113,24 +114,24 @@ class HttpRequest {
 
   public uploadCloud<CloudUploadRes>(filePath: string): Promise<CloudUploadRes> {
     return new Promise((resolve, reject) => {
-        // 1. 先构建对象存储的key
-        ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) =>{
-          wx.cloud.uploadFile({
-            cloudPath: this.generateCloudStorageKey(projectInfo),
-            filePath: filePath,
-            config: {
-              env: "prod-5g3l0m5je193306f"
-            },
-            success: (res) => {
-              resolve(res as any);
-            },
-            fail: (err) => {
-              reject(new Error('云托管上传失败：' + err.errMsg));
-            }
-          });
-        }).catch(e =>{
-          console.error("上传前无法获取后台项目配置:"+e);
-        })
+      // 1. 先构建对象存储的key
+      ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) => {
+        wx.cloud.uploadFile({
+          cloudPath: this.generateCloudStorageKey(projectInfo),
+          filePath: filePath,
+          config: {
+            env: "prod-5g3l0m5je193306f"
+          },
+          success: (res) => {
+            resolve(res as any);
+          },
+          fail: (err) => {
+            reject(new Error('云托管上传失败：' + err.errMsg));
+          }
+        });
+      }).catch(e => {
+        console.error("上传前无法获取后台项目配置:" + e);
+      })
     });
   }
 
@@ -147,20 +148,14 @@ class HttpRequest {
       const header = {
         'appId': allBaseUrl.appId
       } as any;
-      wx.getStorage({
-        key: "loginRes",
-        success(res) {
-          const loginRes = res.data;
-          if (loginRes) {
-            header['openid'] = loginRes.openid;
-            header['sessionKey'] = loginRes.sessionKey;
-            header['unionid'] = loginRes.unionid;
-          }
-        }
+      LoginResCache.then((wxMaSession: WxMaSessionResp) => {
+        header['openid'] = wxMaSession.openid;
+        header['sessionKey'] = wxMaSession.sessionKey;
+        header['unionid'] = wxMaSession.unionid;
       });
       if (true) {
         // 1. 先构建对象存储的key
-        ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) =>{
+        ProjectInfoRespCache.getStorage().then((projectInfo: ProjectInfoResp) => {
           wx.cloud.uploadFile({
             cloudPath: this.generateCloudStorageKey(projectInfo),
             filePath: filePath,
@@ -191,8 +186,8 @@ class HttpRequest {
               reject(new Error('云托管上传失败：' + err.errMsg));
             }
           });
-        }).catch(e =>{
-          console.error("上传前无法获取后台项目配置:"+e);
+        }).catch(e => {
+          console.error("上传前无法获取后台项目配置:" + e);
         })
       } else {
         // 原生上传
@@ -239,16 +234,10 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       // 动态添加header属性
-      wx.getStorage({
-        key: "loginRes",
-        success(res) {
-          const loginRes = res.data;
-          if (loginRes) {
-            header['openid'] = loginRes.openid;
-            header['sessionKey'] = loginRes.sessionKey;
-            header['unionid'] = loginRes.unionid;
-          }
-        }
+      LoginResCache.then((wxMaSession: WxMaSessionResp) => {
+        header['openid'] = wxMaSession.openid;
+        header['sessionKey'] = wxMaSession.sessionKey;
+        header['unionid'] = wxMaSession.unionid;
       });
       if (allBaseUrl.GDEnvs.useCloudContainer) {
         console.log("调用微信云托管:" + requestConfig.url);

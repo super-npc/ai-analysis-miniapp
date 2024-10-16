@@ -1,9 +1,10 @@
-import { ProjectInfoResp, WxMaJscode2SessionResult } from "../api/controller/MiniAppBaseController";
+import { WxMaSessionResp } from "../api/controller/MiniAppBaseController";
+
 
 const PROJECT_INFO_KEY = "MiniAppBaseController.LoginResCache";
 
 export default class LoginResCache {
-  static saveStorage = (data: WxMaJscode2SessionResult): Promise<void> => {
+  static saveStorage = (data: WxMaSessionResp): Promise<void> => {
     return new Promise((resolve, reject) => {
       wx.setStorage({
         key: PROJECT_INFO_KEY,
@@ -19,7 +20,7 @@ export default class LoginResCache {
     });
   };
   
-  static getStorage = (): Promise<WxMaJscode2SessionResult> => {
+  static getStorage = (): Promise<WxMaSessionResp> => {
     return new Promise((resolve, reject) => {
       wx.getStorage({
         key: PROJECT_INFO_KEY,
