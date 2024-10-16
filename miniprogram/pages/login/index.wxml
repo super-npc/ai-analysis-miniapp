@@ -1,0 +1,9 @@
+<!-- pages/login/index.wxml -->
+<navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list" style="display: flex; flex-direction: column;">
+    <view class="container" style="flex: 1;">
+        <view>
+            <button bindtap="login">一键登录</button>
+        </view>
+    </view>
+</scroll-view>

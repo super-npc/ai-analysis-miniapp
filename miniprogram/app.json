@@ -1,9 +1,8 @@
 {
   "pages": [
+    "pages/login/index",
     "pages/usercenter/index",
     "pages/demo/index",
-    
-    
     "pages/ai_analysis_res/index",
     "pages/index/index",
     "pages/ai_analysis/index"
@@ -59,6 +58,7 @@
     "t-grid": "tdesign-miniprogram/grid/grid",
     "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
     "t-skeleton": "tdesign-miniprogram/skeleton/skeleton",
-    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar"
+    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar",
+    "t-action-sheet": "tdesign-miniprogram/action-sheet/action-sheet"
   }
 }
