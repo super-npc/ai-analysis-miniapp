@@ -270,7 +270,6 @@ class HttpRequest {
             _this.handleResponse(typedRes, requestConfig, resolve, reject);
           },
           fail: err => {
-            debugger
             console.log("微信云托管失败");
             _this.handleFailure(err, requestConfig, reject);
           }
