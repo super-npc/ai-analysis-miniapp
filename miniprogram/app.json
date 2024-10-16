@@ -1,7 +1,10 @@
 {
   "pages": [
-    "pages/ai_analysis_res/index",
+    "pages/usercenter/index",
     "pages/demo/index",
+    
+    
+    "pages/ai_analysis_res/index",
     "pages/index/index",
     "pages/ai_analysis/index"
   ],
@@ -18,7 +21,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/demo/index",
+        "pagePath": "pages/usercenter/index",
         "text": "我的"
       }
     ]
