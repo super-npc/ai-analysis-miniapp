@@ -1,8 +1,0 @@
-/* pages/login/index.wxss */
-button {
-  background-color: #1aad19; /* 按钮背景色 */
-  color: white; /* 按钮文字颜色 */
-  padding: 10px 20px; /* 按钮内边距 */
-  border-radius: 5px; /* 按钮圆角 */
-  margin-top: 10px; /* 按钮间距 */
-}
