@@ -1,8 +1,9 @@
 {
   "pages": [
+    "pages/usercenter/index",
     "pages/index/index",
     "pages/login/index",
-    "pages/usercenter/index",
+    
     "pages/demo/index",
     "pages/ai_analysis_res/index",
     

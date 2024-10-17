@@ -5,14 +5,12 @@
 
   <view class="user-center">
     <view class="user-info">
-      <view class="userinfo">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
+      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+      </button>
+      <view class="nickname-wrapper">
+        <text class="nickname-label">昵称</text>
+        <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
       </view>
     </view>
 

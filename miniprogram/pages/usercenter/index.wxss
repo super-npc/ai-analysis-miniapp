@@ -1,19 +1,24 @@
 .user-center {
-  padding: 20rpx;
-  background-color: #f5f5f5;
+  padding: 30rpx;
+  background-color: #f8f8f8;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  padding: 30rpx;
+  padding: 40rpx;
   background-color: #ffffff;
-  border-radius: 16rpx;
-  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
 .avatar {
-  margin-right: 20rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 30rpx;
+  border: 4rpx solid #f0f0f0;
 }
 
 .info {
@@ -22,26 +27,29 @@
 }
 
 .username {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: bold;
   color: #333333;
+  margin-bottom: 8rpx;
 }
 
 .status {
-  font-size: 24rpx;
-  color: #888888;
-  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #666666;
 }
 
 .function-groups {
   background-color: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
 .order-types {
   display: flex;
   justify-content: space-around;
-  padding: 20rpx 0;
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
 }
 
 .order-type {
@@ -51,20 +59,26 @@
 }
 
 .order-type text {
-  font-size: 24rpx;
-  color: #666666;
-  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #333333;
+  margin-top: 12rpx;
 }
 
 t-cell-group {
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
 }
 
 t-cell {
-  padding: 24rpx 32rpx;
+  padding: 30rpx 40rpx;
 }
 
 t-cell::after {
-  left: 32rpx;
-  right: 32rpx;
+  left: 40rpx;
+  right: 40rpx;
+  height: 2rpx;
+  background-color: #f0f0f0;
+}
+
+t-cell:last-child::after {
+  display: none;
 }
