@@ -19,12 +19,12 @@ export interface WxMaSessionResp {
   unionid?: string;
 }
 
-export interface ProjectInfoResp {
-  applicationName?: string;
-}
-
 export interface WxLoginReq {
   code?: string;
   appId?: string;
+}
+
+export interface ProjectInfoResp {
+  applicationName?: string;
 }
 

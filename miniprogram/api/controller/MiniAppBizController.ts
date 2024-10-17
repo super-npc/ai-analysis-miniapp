@@ -7,12 +7,44 @@ export default class MiniAppBizController {
       baseUrl + '/wx/miniapp/biz/list-big-model', data
     )
 
-static analyse = <AnalyseResp>(data: AnalyseReq) =>
-    httpRequest.post<AnalyseResp>(
-      baseUrl + '/wx/miniapp/biz/analyse', data
+static listAnalyseJob = <ListAnalyseJobResp>(data: ListAnalyseJobReq) =>
+    httpRequest.post<ListAnalyseJobResp>(
+      baseUrl + '/wx/miniapp/biz/list-analyse-job', data
+    )
+
+static submitAnalyseJob = <SubmitAnalyseJobResp>(data: SubmitAnalyseJobReq) =>
+    httpRequest.post<SubmitAnalyseJobResp>(
+      baseUrl + '/wx/miniapp/biz/submit-analyse-job', data
+    )
+
+static queryAnalyseJob = <QueryAnalyseJobResp>(data: QueryAnalyseJob) =>
+    httpRequest.post<QueryAnalyseJobResp>(
+      baseUrl + '/wx/miniapp/biz/query-analyse-job', data
     )
 
 }
+export interface SubmitAnalyseJobReq {
+  bigModelId?: number;
+  objectId?: string;
+}
+
+export interface QueryAnalyseJob {
+  miniAppAnalyseJobId?: number;
+  appId?: string;
+  openId?: string;
+}
+
+export interface ListAnalyseJobReq {
+  a?: string;
+  appId?: string;
+  openId?: string;
+}
+
+export interface SubmitAnalyseJobResp {
+  miniAppAnalyseJobId?: number;
+  sourceObjectId?: string;
+}
+
 export interface MiniAppListBigModelResp {
   bigModelReq?: BigModelResp[];
 }
@@ -26,9 +58,21 @@ export interface BigModelResp {
   status?: string;
 }
 
-export interface AnalyseResp {
-  analyseFinishPath?: string;
-  analyseResults?: AnalyseResult[];
+export interface ListAnalyseJobResp {
+  a?: string;
+}
+
+export interface MiniListBigModelReq {
+  name?: string;
+  age?: number;
+}
+
+export interface QueryAnalyseJobResp {
+  analyseJobVo?: AnalyseJobVo;
+}
+
+export interface Yolo8ModelVo {
+  name?: string;
 }
 
 export interface AnalyseResult {
@@ -37,13 +81,32 @@ export interface AnalyseResult {
   confidence?: string;
 }
 
-export interface MiniListBigModelReq {
-  name?: string;
-  age?: number;
+export interface AnalyseJobVo {
+  yoloModel?: Yolo8ModelVo;
+  sourceObjectId?: string;
+  targetObjectId?: string;
+  analyseResults?: AnalyseResult[];
+  processStatus?: ProcessStatus;
 }
 
-export interface AnalyseReq {
-  bigModelId?: number;
-  objectId?: string;
+export enum ProcessStatus{
+        /** 待处理 */
+    PENDING,
+
+    /** 运行中 */
+    RUNNING,
+
+    /** 已暂停 */
+    PAUSED,
+
+    /** 成功 */
+    SUCCESS,
+
+    /** 失败 */
+    FAIL,
+
+    /** 已取消 */
+    CANCELED,
+
 }
 

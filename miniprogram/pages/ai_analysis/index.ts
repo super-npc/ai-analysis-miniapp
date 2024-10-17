@@ -1,5 +1,5 @@
 import MiniAppBizController, { BigModelResp } from "../../api/controller/MiniAppBizController";
-import { AnalyseResp, AnalyseResult } from "../../api/controller/MiniAppBizController";
+import { SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController";
 import CloudController from "../../api/system/CloudController";
 import CloudStorageUtil from "../../utils/CloudStorageUtil";
 import { CloudUploadRes, } from "../../utils/request";
@@ -20,7 +20,7 @@ Component({
   data: {
     showCamera: false,
     src: '',
-    analyseResults: [] as AnalyseResult[],
+    analyseResults: [] as SubmitAnalyseJobResp[],
     bigModelResp: {} as BigModelResp, // 添加 BigModelResp 对象
     visible: true,
     marquee2: {
@@ -59,27 +59,38 @@ Component({
 
       // 显示加载中遮罩层
       wx.showLoading({
-        title: '分析中...',
+        title: '提交分析任务...',
         mask: true
       });
 
       CloudController.uploadCloud(picPath).then((cloudRes: any) =>{
+        debugger
         const uploadRes = cloudRes as CloudUploadRes;
-        MiniAppBizController.analyse({bigModelId:this.data.bigModelResp.id,objectId:uploadRes.fileID}).then(res => {
-          const analyseResp = res as unknown as AnalyseResp
-          // 更新显示的图片和分析结果
-          const picUrl = CloudStorageUtil.convertFileIdToUrl(analyseResp.analyseFinishPath || '');
-          this.setData({
-            src: picUrl,
-            analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
-              ...result,
-              rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
-            })) : []
+        MiniAppBizController.submitAnalyseJob({bigModelId:this.data.bigModelResp.id,objectId:uploadRes.fileID}).then(res => {
+          const analyseResp = res as unknown as SubmitAnalyseJobResp
+          // 获取分析结果后跳转到 ai_analysis_res 页面
+          wx.navigateTo({
+            url: '/pages/ai_analysis_res/index',
+            success: (res) => {
+              // 将分析结果传递给新页面
+              res.eventChannel.emit('acceptAnalyseResult', { analyseResp: analyseResp });
+            }
           });
+          // 更新显示的图片和分析结果
+          // const picUrl = CloudStorageUtil.convertFileIdToUrl(analyseResp.analyseFinishPath || '');
+          // this.setData({
+          //   src: picUrl,
+          //   analyseResults: analyseResp.analyseResults ? analyseResp.analyseResults.map(result => ({
+          //     ...result,
+          //     rgb: `rgb(${result.rgb})` // 将rgb字符串转换为CSS颜色格式
+          //   })) : []
+          // });
         }).finally(() => {
           // 无论成功与否，都隐藏加载中遮罩层
           wx.hideLoading();
         });
+      }).catch(err =>{
+        console.log(`上传文件异常:${err}`);
       })
     },
 
