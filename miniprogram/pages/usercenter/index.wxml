@@ -1,18 +1,18 @@
 <!--pages/demo/index.wxml-->
-<navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<navigation-bar title="用户中心" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
 <scroll-view class="scrollarea" scroll-y type="list" style="display: flex; flex-direction: column;">
 
   <view class="user-center">
-    <view class="user-info">
-      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-        <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-      </button>
-      <view class="nickname-wrapper">
-        <text class="nickname-label">昵称</text>
-        <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-      </view>
+   <view class="user-info">
+    <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+    </button>
+    <view class="nickname-wrapper">
+      <text class="nickname-label">昵称</text>
+      <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
     </view>
+  </view>
 
     <view class="function-groups">
       <t-cell-group title="我的服务">
