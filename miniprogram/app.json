@@ -17,11 +17,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "assets/icons/小狗狗.png",
+        "selectedIconPath": "assets/icons/小狗狗.png"
       },
       {
         "pagePath": "pages/usercenter/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "assets/icons/小狗狗.png",
+        "selectedIconPath": "assets/icons/小狗狗.png"
       }
     ]
   },
