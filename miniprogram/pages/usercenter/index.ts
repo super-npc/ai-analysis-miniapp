@@ -45,6 +45,7 @@ Component({
         "userInfo.avatarUrl": avatarUrl,
         hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
+      // 存储用户头像
     },
     onInputChange(e: any) {
       const nickName = e.detail.value
@@ -53,6 +54,7 @@ Component({
         "userInfo.nickName": nickName,
         hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
+      // 存储用户昵称
     },
     async loadUserInfo() {
       await LoginResCache.getStorage().then((res) => {
