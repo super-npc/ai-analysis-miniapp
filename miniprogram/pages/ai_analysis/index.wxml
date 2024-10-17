@@ -15,9 +15,7 @@
       </view>
     </view>
     <view class="camera-preview-container">
-      <camera wx:if="{{showCamera}}" device-position="back" flash="off" binderror="error" class="camera"></camera>
       <t-image
-        wx:else
         t-class="preview-image"
         src="{{src || '/images/default.webp'}}"
         mode="aspectFit"
@@ -27,9 +25,7 @@
     </view>
 
     <view class="button-group">
-      <button type="primary" bindtap="toggleCamera">{{showCamera ? '关闭摄像头' : '我要拍照'}}</button>
-      <button wx:if="{{showCamera}}" type="primary" bindtap="takePhoto">确认拍照</button>
-      <button wx:if="{{!showCamera}}" type="primary" bindtap="chooseImage">选择图片</button>
+      <button type="primary" bindtap="chooseImage">选择图片</button>
     </view>
     <view class="analyse-results-container" wx:if="{{analyseResults.length > 0}}">
       <view class="analyse-result-item" wx:for="{{analyseResults}}" wx:key="index">
