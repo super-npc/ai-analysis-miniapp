@@ -1,10 +1,11 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/login/index",
     "pages/usercenter/index",
     "pages/demo/index",
     "pages/ai_analysis_res/index",
-    "pages/index/index",
+    
     "pages/ai_analysis/index"
   ],
   "window": {

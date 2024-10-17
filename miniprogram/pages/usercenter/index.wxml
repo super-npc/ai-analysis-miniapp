@@ -2,26 +2,30 @@
 <navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
 <scroll-view class="scrollarea" scroll-y type="list" style="display: flex; flex-direction: column;">
-  
-    <view class="user-center">
-      <view class="user-info">
-        <t-avatar class="avatar" size="large" image="{{avatarUrl}}" />
-        <view class="info">
-          <text class="username">{{username}}</text>
-          <text class="user-id">ID: {{userId}}</text>
+
+  <view class="user-center">
+    <view class="user-info">
+      <view class="userinfo">
+        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+        </button>
+        <view class="nickname-wrapper">
+          <text class="nickname-label">昵称</text>
+          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
         </view>
       </view>
-
-      <view class="function-groups">
-        <t-cell-group title="我的服务">
-          <t-cell title="我的图片" leftIcon="nut" hover arrow />
-          <t-cell title="优惠券" leftIcon="list" hover arrow />
-        </t-cell-group>
-
-        <t-cell-group>
-          <t-cell title="设置" leftIcon="setting" hover arrow />
-        </t-cell-group>
-      </view>
     </view>
-  
+
+    <view class="function-groups">
+      <t-cell-group title="我的服务">
+        <t-cell title="我的图片" leftIcon="nut" hover arrow />
+        <t-cell title="优惠券" leftIcon="list" hover arrow />
+      </t-cell-group>
+
+      <t-cell-group>
+        <t-cell title="设置" leftIcon="setting" hover arrow />
+      </t-cell-group>
+    </view>
+  </view>
+
 </scroll-view>
