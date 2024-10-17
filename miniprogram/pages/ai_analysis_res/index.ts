@@ -29,7 +29,7 @@ Component({
       const result = this.data.possibleResults[index]
       // 处理点击结果的逻辑
       wx.showToast({
-        title: `您选择了: ${result.name}`,
+        title: `您选择了: ${result}`,
         icon: 'none'
       })
     }

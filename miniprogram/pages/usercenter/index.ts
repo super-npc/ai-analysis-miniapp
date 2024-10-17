@@ -54,8 +54,8 @@ Component({
         hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
     },
-    loadUserInfo() {
-      LoginResCache.getStorage().then((res) => {
+    async loadUserInfo() {
+      await LoginResCache.getStorage().then((res) => {
         const wxMaSessionResp = res as WxMaSessionResp;
         this.setData({
           username: wxMaSessionResp.openid || '未知用户'

@@ -144,11 +144,11 @@ class HttpRequest {
    * @param data 
    */
   public uploadFile<T>(url: string, filePath: string, data: any): Promise<MyAwesomeData<T>> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const header = {
         'appId': allBaseUrl.appId
       } as any;
-      LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
+      await LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
         header['openid'] = wxMaSession.openid;
         header['sessionKey'] = wxMaSession.sessionKey;
         header['unionid'] = wxMaSession.unionid;
@@ -226,7 +226,7 @@ class HttpRequest {
     console.log("发起请求,环境:" + allBaseUrl.GDEnvs.useCloudContainer);
 
     let _this = this
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // 默认header
       const contentType = requestConfig.method === 'GET' ? 'application/x-www-form-urlencoded' : 'application/json'
       const header = {
@@ -234,7 +234,7 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       // 动态添加header属性
-      LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
+      await LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
         header['openid'] = wxMaSession.openid;
         header['sessionKey'] = wxMaSession.sessionKey;
         header['unionid'] = wxMaSession.unionid;
