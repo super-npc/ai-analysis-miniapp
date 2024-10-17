@@ -1,59 +1,50 @@
-// index.ts// 获取应用实例
-const app = getApp<IAppOption>()
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+import MiniAppBizController, { BigModelResp, MiniAppListBigModelResp } from '../../api/controller/MiniAppBizController';
+import CloudStorageUtil from '../../utils/CloudStorageUtil';
 
 Component({
   data: {
-    motto: 'Hello World',
-    userInfo: {
-      avatarUrl: defaultAvatarUrl,
-      nickName: '',
-    },
-    hasUserInfo: false,
-    canIUseGetUserProfile: wx.canIUse('getUserProfile'),
-    canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    bigModelList: [] as BigModelResp[]   
   },
+
   methods: {
-    // 事件处理函数
-    bindViewTap() {
+    onItemTap(event: any) {
+      const item = event.currentTarget.dataset.item;
       wx.navigateTo({
-        url: '../logs/logs',
-      })
-    },
-    getUserInfo(){
-      // userApi.getUserInfo({code: res.code}).then((res) => {
-      //   const loginRes = res as unknown as LoginResp;
-      //   wx.setStorage({ key: "loginRes", data: loginRes });
-      // });
-    },
-    onChooseAvatar(e: any) {
-      const { avatarUrl } = e.detail
-      const { nickName } = this.data.userInfo
-      this.setData({
-        "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    onInputChange(e: any) {
-      const nickName = e.detail.value
-      const { avatarUrl } = this.data.userInfo
-      this.setData({
-        "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    getUserProfile() {
-      // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-      wx.getUserProfile({
-        desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-        success: (res) => {
-          console.log(res)
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
+        url: `/pages/ai_analysis/index`,
+        success(data) {
+          data.eventChannel.emit('acceptDataFromOpenerPage', { data: item })
         }
-      })
+      });
     },
+    async fetchBigModelList() {
+      try {
+        const response = await MiniAppBizController.listBigModel({name:"",age:11}) as MiniAppListBigModelResp;
+        this.setData({
+          bigModelList: Array.isArray(response.bigModelReq) ? response.bigModelReq.map((item): BigModelResp => ({
+            id: Number(item.id) || 0,
+            name: item.name || '',
+            image: CloudStorageUtil.convertFileIdToUrl(item.image || ''),
+            description: item.description || '',
+            status: item.status || '',
+            useCount: item.useCount || 0  // 添加了useCount字段
+          })) : []
+        });
+      } catch (error) {
+        console.error('获取大模型列表失败:', error);
+        wx.showToast({
+          title: '获取大模型列表失败',
+          icon: 'none'
+        });
+      }
+    },
+
   },
+   /**
+   * 生命周期函数--在组件实例进入页面节点树时执行
+   */
+  lifetimes: {
+    attached() {
+      this.fetchBigModelList();
+    }
+  }
 })

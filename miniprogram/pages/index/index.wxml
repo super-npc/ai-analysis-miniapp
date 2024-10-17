@@ -1,15 +1,24 @@
-<!--index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
+<!--pages/demo/index.wxml-->
+<navigation-bar title="模型选择" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="scrollarea" scroll-y type="list" style="display: flex; flex-direction: column;">
+  <view class="container" style="flex: 1;">
+    <view class="header">
+      <text class="title">图片识别</text>
+    </view>
+
+    <view class="menu-list">
+      <view class="menu-item" wx:for="{{bigModelList}}" wx:key="id" bindtap="onItemTap" data-item="{{item}}" style="display: flex; flex-direction: row;">
+        <image class="food-image" src="{{item.image}}" mode="aspectFill" style="width: 80px; height: 80px;"></image>
+        <view class="food-info" style="flex: 1; display: flex; flex-direction: column;">
+          <text class="food-name">{{item.name}}</text>
+          <text class="food-description">{{item.description}}</text>
+          <view class="price-container" style="display: flex; justify-content: space-between;">
+            <text class="price">已用 {{item.useCount || 0}}</text>
+            <text class="status">{{item.status}}</text>
+          </view>
         </view>
+      </view>
     </view>
   </view>
 </scroll-view>
