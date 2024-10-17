@@ -148,7 +148,7 @@ class HttpRequest {
       const header = {
         'appId': allBaseUrl.appId
       } as any;
-      LoginResCache.then((wxMaSession: WxMaSessionResp) => {
+      LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
         header['openid'] = wxMaSession.openid;
         header['sessionKey'] = wxMaSession.sessionKey;
         header['unionid'] = wxMaSession.unionid;
@@ -234,7 +234,7 @@ class HttpRequest {
         'appId': allBaseUrl.appId
       } as any;
       // 动态添加header属性
-      LoginResCache.then((wxMaSession: WxMaSessionResp) => {
+      LoginResCache.getStorage().then((wxMaSession: WxMaSessionResp) => {
         header['openid'] = wxMaSession.openid;
         header['sessionKey'] = wxMaSession.sessionKey;
         header['unionid'] = wxMaSession.unionid;

@@ -41,7 +41,7 @@ Component({
         success: res => {
           debugger
           console.log("登录:" + res.code)
-          MiniAppBaseController.login({ code: res.code }).then((loginResThen: unknown | WxMaSessionResp) => {
+          MiniAppBaseController.login({ code: res.code }).then((loginResThen) => {
             const loginRes = loginResThen as WxMaSessionResp;
             LoginResCache.saveStorage(loginRes);
 

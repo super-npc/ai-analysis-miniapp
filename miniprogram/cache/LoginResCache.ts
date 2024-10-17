@@ -4,6 +4,9 @@ import { WxMaSessionResp } from "../api/controller/MiniAppBaseController";
 const PROJECT_INFO_KEY = "MiniAppBaseController.LoginResCache";
 
 export default class LoginResCache {
+  static then(arg0: (wxMaSessionResp: any) => void) {
+    throw new Error("Method not implemented.");
+  }
   static saveStorage = (data: WxMaSessionResp): Promise<void> => {
     return new Promise((resolve, reject) => {
       wx.setStorage({
