@@ -18,14 +18,14 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "assets/icons/小狗狗.png",
-        "selectedIconPath": "assets/icons/小狗狗.png"
+        "iconPath": "assets/icon/dog.png",
+        "selectedIconPath": "assets/icon/dog.png"
       },
       {
         "pagePath": "pages/usercenter/index",
         "text": "我的",
-        "iconPath": "assets/icons/小狗狗.png",
-        "selectedIconPath": "assets/icons/小狗狗.png"
+        "iconPath": "assets/icon/dog.png",
+        "selectedIconPath": "assets/icon/dog.png"
       }
     ]
   },
