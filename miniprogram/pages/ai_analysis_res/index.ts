@@ -1,4 +1,4 @@
-import MiniAppBizController, { AnalyseResult, QueryAnalyseJobResp, SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
+import MiniAppBizController, { AnalyseResult, ProcessType, QueryAnalyseJobResp, SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
 
 // pages/ai_analysis_res/index.ts
 Component({
@@ -44,15 +44,7 @@ Component({
       this.setData({
         analyseResp: submitAnalyseJobResp,
       })
-      MiniAppBizController.queryAnalyseJob({miniAppAnalyseJobId: 3}).then((res) => {
-        const queryAnalyseJobResp = res as QueryAnalyseJobResp;
-        this.setData({
-          queryAnalyseJobResp: queryAnalyseJobResp,
-          bannerImage: queryAnalyseJobResp.analyseJobVo?.sourceObjectId || '',
-          adText: queryAnalyseJobResp.analyseJobVo?.yoloModel?.name || '未知模型',
-          possibleResults: queryAnalyseJobResp.analyseJobVo?.analyseResults || []
-        });
-      });
+      this.queryAnalyseJobUntilFinish(3);
     }
   },
 
@@ -60,6 +52,28 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    queryAnalyseJobUntilFinish(miniAppAnalyseJobId: number) {
+      const queryJob = () => {
+        MiniAppBizController.queryAnalyseJob({miniAppAnalyseJobId}).then((res) => {
+          const queryAnalyseJobResp = res as QueryAnalyseJobResp;
+          this.setData({
+            queryAnalyseJobResp: queryAnalyseJobResp,
+            bannerImage: queryAnalyseJobResp.analyseJobVo?.sourceObjectId || '',
+            adText: queryAnalyseJobResp.analyseJobVo?.yoloModel?.name || '未知模型',
+            possibleResults: queryAnalyseJobResp.analyseJobVo?.analyseResults || []
+          });
+          
+          const process = queryAnalyseJobResp.analyseJobVo?.process;
+          console.log(`流程结果:${process}`);
+          if (process?.toString() !== 'FINISH') {
+            setTimeout(queryJob, 2000);
+          }
+        });
+      };
+
+      queryJob();
+    },
+
     processAnalyseResult() {
       // 处理分析结果的逻辑
       // 例如：更新 bannerImage、adText 和 possibleResults
