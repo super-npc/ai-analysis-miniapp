@@ -1,7 +1,6 @@
 import MiniAppBizController, { BigModelResp } from "../../api/controller/MiniAppBizController";
 import { SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController";
 import CloudController from "../../api/system/CloudController";
-import CloudStorageUtil from "../../utils/CloudStorageUtil";
 import { CloudUploadRes, } from "../../utils/request";
 
 // pages/demo/index.ts
@@ -64,7 +63,7 @@ Component({
       });
 
       CloudController.uploadCloud(picPath).then((cloudRes: any) =>{
-        debugger
+        
         const uploadRes = cloudRes as CloudUploadRes;
         MiniAppBizController.submitAnalyseJob({bigModelId:this.data.bigModelResp.id,objectId:uploadRes.fileID}).then(res => {
           const analyseResp = res as unknown as SubmitAnalyseJobResp

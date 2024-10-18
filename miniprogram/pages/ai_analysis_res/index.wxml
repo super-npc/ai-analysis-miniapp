@@ -1,7 +1,7 @@
 <!--pages/ai_analysis_res/index.wxml-->
 
 <!--pages/demo/index.wxml-->
-<navigation-bar title="模型识别" back="{{true}}" color="black" background="#FFF"></navigation-bar>
+<navigation-bar title="识别结果" back="{{true}}" color="black" background="#FFF"></navigation-bar>
 
 <t-notice-bar visible="{{visible}}" marquee="{{marquee2}}" content="请勿上传违规内容"></t-notice-bar>
 <scroll-view class="scrollarea" scroll-y type="list">

@@ -27,8 +27,10 @@ Component({
     attached() {
       const eventChannel = this.getOpenerEventChannel()
       eventChannel.on('acceptAnalyseResult', (data) => {
+        debugger
+        const submitAnalyseJobResp = data.analyseResp as SubmitAnalyseJobResp;
         this.setData({
-          analyseResp: data.analyseResp
+          analyseResp: submitAnalyseJobResp,
         })
         this.processAnalyseResult()
       })
