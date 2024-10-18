@@ -7,7 +7,7 @@
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     <view class="banner">
-      <image class="banner-image" src="{{bannerImage}}" mode="aspectFill"></image>
+      <image class="banner-image" src="{{bannerImage}}" mode="aspectFit"></image>
       <text class="ad-text">模型: {{adText}}</text>
     </view>
 
