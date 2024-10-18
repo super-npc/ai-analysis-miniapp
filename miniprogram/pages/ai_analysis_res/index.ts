@@ -1,4 +1,4 @@
-import { SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
+import MiniAppBizController, { QueryAnalyseJobResp, SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
 
 // pages/ai_analysis_res/index.ts
 Component({
@@ -25,15 +25,29 @@ Component({
    */
   lifetimes: {
     attached() {
-      const eventChannel = this.getOpenerEventChannel()
-      eventChannel.on('acceptAnalyseResult', (data) => {
-        debugger
-        const submitAnalyseJobResp = data.analyseResp as SubmitAnalyseJobResp;
-        this.setData({
-          analyseResp: submitAnalyseJobResp,
-        })
-        this.processAnalyseResult()
+      // const eventChannel = this.getOpenerEventChannel()
+      // eventChannel.on('acceptAnalyseResult', (data) => {
+      //   debugger
+      //   const submitAnalyseJobResp = data.analyseResp as SubmitAnalyseJobResp;
+      //   this.setData({
+      //     analyseResp: submitAnalyseJobResp,
+      //   })
+      //   this.processAnalyseResult()
+      // })
+
+      // 测试数据
+      const submitAnalyseJobResp: SubmitAnalyseJobResp = {
+        miniAppAnalyseJobId: 3,
+        sourceObjectId: "cloud://prod-5g3l0m5je193306f.7072-prod-5g3l0m5je193306f-1259198184/nobita/miniapp/wx13754984438a1b4d/image/2024-10-18/nufjbvv7s8j.png"
+      };
+      this.setData({
+        analyseResp: submitAnalyseJobResp,
       })
+      MiniAppBizController.queryAnalyseJob({miniAppAnalyseJobId: 3}).then((res) => {
+        debugger
+        const queryAnalyseJobResp = res as QueryAnalyseJobResp;
+        console.log(queryAnalyseJobResp)
+      });
     }
   },
 

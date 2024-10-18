@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/ai_analysis_res/index",
     "pages/index/index",
     "pages/usercenter/index",
-    "pages/ai_analysis_res/index",
     "pages/ai_analysis/index"
   ],
   "window": {
