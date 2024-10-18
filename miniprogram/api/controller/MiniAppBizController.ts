@@ -6,82 +6,47 @@ export default class MiniAppBizController {
     httpRequest.post<MiniAppListBigModelResp>(
       baseUrl + '/wx/miniapp/biz/list-big-model', data
     )
-
-static listAnalyseJob = <ListAnalyseJobResp>(data: ListAnalyseJobReq) =>
+static queryAnalyseJob = <QueryAnalyseJobResp>(data: QueryAnalyseJob) =>
+    httpRequest.post<QueryAnalyseJobResp>(
+      baseUrl + '/wx/miniapp/biz/query-analyse-job', data
+    )
+static submitAnalyseJob = <SubmitAnalyseJobResp>(data: SubmitAnalyseJobReq) =>
+    httpRequest.post<SubmitAnalyseJobResp>(
+      baseUrl + '/wx/miniapp/biz/submit-analyse-job', data
+    )
+static listAnalyseJob = <ListAnalyseJobResp>(data: ListAnalyseJobReq) =>
     httpRequest.post<ListAnalyseJobResp>(
       baseUrl + '/wx/miniapp/biz/list-analyse-job', data
     )
 
-static submitAnalyseJob = <SubmitAnalyseJobResp>(data: SubmitAnalyseJobReq) =>
-    httpRequest.post<SubmitAnalyseJobResp>(
-      baseUrl + '/wx/miniapp/biz/submit-analyse-job', data
-    )
-
-static queryAnalyseJob = <QueryAnalyseJobResp>(data: QueryAnalyseJob) =>
-    httpRequest.post<QueryAnalyseJobResp>(
-      baseUrl + '/wx/miniapp/biz/query-analyse-job', data
-    )
+}
+export enum ProcessType{
+        /** 运行中 */
+    RUNNING,
+    /** 完成 */
+    FINISH,
+    /** 未开始 */
+    WAITING,
 
 }
-export interface SubmitAnalyseJobReq {
-  bigModelId?: number;
-  objectId?: string;
-}
+export enum StatusType{
+        /** 失败 */
+    FAIL,
+    /** 成功 */
+    SUCCESS,
+    /** 已创建 */
+    CREATED,
 
-export interface QueryAnalyseJob {
-  miniAppAnalyseJobId?: number;
-  appId?: string;
-  openId?: string;
 }
-
-export interface ListAnalyseJobReq {
-  a?: string;
-  appId?: string;
-  openId?: string;
-}
-
-export interface SubmitAnalyseJobResp {
-  miniAppAnalyseJobId?: number;
-  sourceObjectId?: string;
-}
-
-export interface MiniAppListBigModelResp {
-  bigModelReq?: BigModelResp[];
-}
-
-export interface BigModelResp {
-  id?: number;
-  name?: string;
-  image?: string;
-  description?: string;
-  useCount?: number;
-  status?: string;
-}
-
-export interface ListAnalyseJobResp {
-  a?: string;
-}
-
-export interface MiniListBigModelReq {
-  name?: string;
-  age?: number;
-}
-
-export interface QueryAnalyseJobResp {
-  analyseJobVo?: AnalyseJobVo;
-}
-
-export interface Yolo8ModelVo {
+export interface Yolo8ModelVo {
   name?: string;
 }
-
-export interface AnalyseResult {
+export interface AnalyseResult {
   label?: string;
   rgb?: string;
   confidence?: string;
 }
-
-export interface AnalyseJobVo {
+export interface AnalyseJobVo {
   yoloModel?: Yolo8ModelVo;
   sourceObjectId?: string;
   targetObjectId?: string;
@@ -89,28 +54,77 @@ export interface AnalyseJobVo {
   process?: ProcessType;
   status?: StatusType;
 }
-
-export enum StatusType{
-        /** 已创建 */
-    CREATED,
-
-    /** 失败 */
-    FAIL,
-
-    /** 成功 */
-    SUCCESS,
-
+export interface QueryAnalyseJobResp {
+  analyseJobVo?: AnalyseJobVo;
 }
-
-export enum ProcessType{
-        /** 未开始 */
+export interface SubmitAnalyseJobReq {
+  bigModelId?: number;
+  objectId?: string;
+}
+export enum ProcessType{
+        /** 运行中 */
+    RUNNING,
+    /** 完成 */
+    FINISH,
+    /** 未开始 */
     WAITING,
 
-    /** 运行中 */
-    RUNNING,
+}
+export enum StatusType{
+        /** 失败 */
+    FAIL,
+    /** 成功 */
+    SUCCESS,
+    /** 已创建 */
+    CREATED,
 
-    /** 完成 */
-    FINISH,
-
+}
+export interface Yolo8ModelVo {
+  name?: string;
+}
+export interface AnalyseResult {
+  label?: string;
+  rgb?: string;
+  confidence?: string;
+}
+export interface ListAnalyseJobResp {
+  analyseJobVos?: AnalyseJobVo[];
+}
+export interface AnalyseJobVo {
+  yoloModel?: Yolo8ModelVo;
+  sourceObjectId?: string;
+  targetObjectId?: string;
+  analyseResults?: AnalyseResult[];
+  process?: ProcessType;
+  status?: StatusType;
+}
+export interface MiniListBigModelReq {
+  name?: string;
+  age?: number;
+}
+export interface QueryAnalyseJob {
+  miniAppAnalyseJobId?: number;
+  appId?: string;
+  openId?: string;
+}
+export interface ListAnalyseJobReq {
+  a?: string;
+  appId?: string;
+  openId?: string;
+}
+export interface BigModelResp {
+  id?: number;
+  name?: string;
+  image?: string;
+  description?: string;
+  useCount?: number;
+  status?: string;
+}
+export interface MiniAppListBigModelResp {
+  bigModelReq?: BigModelResp[];
+}
+export interface SubmitAnalyseJobResp {
+  miniAppAnalyseJobId?: number;
+  sourceObjectId?: string;
 }
 

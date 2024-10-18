@@ -6,25 +6,22 @@ export default class MiniAppBaseController {
     httpRequest.post<WxMaSessionResp>(
       baseUrl + '/wx/miniapp/user/login', data
     )
-
-static getProjectInfo = <ProjectInfoResp>() =>
+static getProjectInfo = <ProjectInfoResp>() =>
     httpRequest.post<ProjectInfoResp>(
       baseUrl + '/wx/miniapp/base/get-project-info'
     )
 
 }
-export interface WxLoginReq {
-  code?: string;
-  appId?: string;
-}
-
 export interface WxMaSessionResp {
   sessionKey?: string;
   openid?: string;
   unionid?: string;
 }
-
-export interface ProjectInfoResp {
+export interface ProjectInfoResp {
   applicationName?: string;
+}
+export interface WxLoginReq {
+  code?: string;
+  appId?: string;
 }
 

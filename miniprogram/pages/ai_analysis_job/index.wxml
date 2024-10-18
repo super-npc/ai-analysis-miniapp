@@ -1,0 +1,28 @@
+<view class="product-container">
+  <view class="product-item" wx:for="{{products}}" wx:key="id">
+    <view class="user-info">
+      <image class="avatar" src="{{item.avatarUrl}}" />
+      <text class="username">{{item.username}}</text>
+      <text class="user-tag">{{item.userTag}}</text>
+    </view>
+    
+    <view class="product-info">
+      <text class="product-title">{{item.title}}</text>
+      <text class="product-price">¥{{item.price}}</text>
+    </view>
+    
+    <view class="product-images">
+      <image class="product-image" wx:for="{{item.images}}" wx:for-item="image" wx:key="*this" src="{{image}}" />
+    </view>
+    
+    <view class="product-stats">
+      <view class="group-buy">
+        <text class="group-buy-text">{{item.groupBuyCount}}人跟团</text>
+        <text class="views-text">{{item.viewCount}}人看过</text>
+      </view>
+      <view class="share-button" bindtap="onShareTap">分享</view>
+    </view>
+  </view>
+  
+  <!-- 可以添加更多产品项 -->
+</view>

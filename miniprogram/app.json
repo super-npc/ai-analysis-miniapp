@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/ai_analysis_job/index",
     "pages/ai_analysis_res/index",
     "pages/index/index",
     "pages/usercenter/index",
