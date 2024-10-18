@@ -1,4 +1,4 @@
-import MiniAppBizController, { QueryAnalyseJobResp, SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
+import MiniAppBizController, { AnalyseResult, QueryAnalyseJobResp, SubmitAnalyseJobResp } from "../../api/controller/MiniAppBizController"
 
 // pages/ai_analysis_res/index.ts
 Component({
@@ -15,9 +15,10 @@ Component({
    */
   data: {
     analyseResp: {} as SubmitAnalyseJobResp,
+    queryAnalyseJobResp: {} as QueryAnalyseJobResp,
     bannerImage: '',
     adText: '',
-    possibleResults: []
+    possibleResults: [] as AnalyseResult[]
   },
 
   /**
@@ -44,9 +45,13 @@ Component({
         analyseResp: submitAnalyseJobResp,
       })
       MiniAppBizController.queryAnalyseJob({miniAppAnalyseJobId: 3}).then((res) => {
-        debugger
         const queryAnalyseJobResp = res as QueryAnalyseJobResp;
-        console.log(queryAnalyseJobResp)
+        this.setData({
+          queryAnalyseJobResp: queryAnalyseJobResp,
+          bannerImage: queryAnalyseJobResp.analyseJobVo?.sourceObjectId || '',
+          adText: queryAnalyseJobResp.analyseJobVo?.yoloModel?.name || '未知模型',
+          possibleResults: queryAnalyseJobResp.analyseJobVo?.analyseResults || []
+        });
       });
     }
   },

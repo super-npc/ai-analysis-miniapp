@@ -86,27 +86,31 @@ export interface AnalyseJobVo {
   sourceObjectId?: string;
   targetObjectId?: string;
   analyseResults?: AnalyseResult[];
-  processStatus?: ProcessStatus;
+  process?: ProcessType;
+  status?: StatusType;
 }
 
-export enum ProcessStatus{
-        /** 待处理 */
-    PENDING,
-
-    /** 运行中 */
-    RUNNING,
-
-    /** 已暂停 */
-    PAUSED,
-
-    /** 成功 */
-    SUCCESS,
+export enum StatusType{
+        /** 已创建 */
+    CREATED,
 
     /** 失败 */
     FAIL,
 
-    /** 已取消 */
-    CANCELED,
+    /** 成功 */
+    SUCCESS,
+
+}
+
+export enum ProcessType{
+        /** 未开始 */
+    WAITING,
+
+    /** 运行中 */
+    RUNNING,
+
+    /** 完成 */
+    FINISH,
 
 }
 

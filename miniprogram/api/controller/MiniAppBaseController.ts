@@ -13,15 +13,15 @@ static getProjectInfo = <ProjectInfoResp>() =>
     )
 
 }
+export interface WxLoginReq {
+  code?: string;
+  appId?: string;
+}
+
 export interface WxMaSessionResp {
   sessionKey?: string;
   openid?: string;
   unionid?: string;
-}
-
-export interface WxLoginReq {
-  code?: string;
-  appId?: string;
 }
 
 export interface ProjectInfoResp {

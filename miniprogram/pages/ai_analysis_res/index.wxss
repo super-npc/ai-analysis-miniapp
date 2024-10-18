@@ -74,3 +74,26 @@
   font-size: 22rpx;
   color: #666;
 }
+
+.status-container {
+  margin-top: 20rpx;
+  background-color: #f0f0f0;
+  padding: 10rpx;
+  border-radius: 5rpx;
+}
+
+.status-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.file-info {
+  margin-top: 20rpx;
+}
+
+.file-info-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
